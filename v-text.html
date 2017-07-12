@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>v-text控制整个标签的内容绑定</title>
+    <script src="js/vue.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <!--引入开发版本vue.js-->
+</head>
+<body>
+<!--定义一个id为app的div-->
+<div id="app" class="container">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="panel panel-primary">
+                <div class="panel-heading">vue js 2.0学习</div>
+                <div class="panel-body">
+    <!--此处的mssage为在vuejs中定义的变量，放在两个花括号中-->
+    <h1>hello{{mssage}}</h1>
+    <!--此处我们把v-text属性放到span标签中-->
+    <span v-text='mssage'></span>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
+<script>
+    <!--实例化vuejs-->
+    new Vue({
+        <!--el指定的id为css选择器-->
+        el:'#app',
+        <!--我们的变量统统放到data中-->
+        data:{
+            <!--此处声明的变量msg内容为实验楼-->
+            mssage:' world'
+        }
+    })
+</script>
+</body>
+</html>

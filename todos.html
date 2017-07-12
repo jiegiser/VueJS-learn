@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>vue.js初试</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+<body>
+<nav class="navbar navbar-default navbar-static-top">
+    <!--定义一个id为app的div-->
+   <div class="container" id="app">
+       <div class="row">
+           <div class="col-md-8 col-md-offset-2">
+               <div class="panel panel-primary">
+                   <div class="panel-heading">vue js 2.0学习</div>
+                   <div class="panel-body">
+                       <h1>my todos</h1>
+                       <ul class="list-group">
+                           <li class="list-group-item"
+                           v-for="(todo，index) in todos"
+                           >{{todo.title}}
+                           <button class="btn btn-warning btn-xs pull-right"
+                           v-on:click="deleteTodo(index)"
+                           >Delete
+                           </button>
+                           </li>
+                       </ul>
+                       <!--prevent指定submit事件触发那个方法-->
+                       <form v-on:submit.prevent="addTodo(newTodo)">
+                           <div class="form-group">
+                               <input type="text" v-model="newTodo.title"
+
+                                      class="form-control"
+                                      placeholder="addTodo">
+                           </div>
+                           <div class="form-group">
+                               <button type="submit" class="btn btn-success">Add todo</button>
+                           </div>
+                       </form>
+                   </div>
+               </div>
+           </div>
+       </div>
+   </div>
+</nav>
+<!--引入开发版本vue.js-->
+<script src="js/vue.js"></script>
+<script>
+    new Vue({
+       el:'#app',
+        data:{
+           message:'hello world',
+            todos:[
+                {id:1,title:'学习 vue js 2.0'}
+            ],
+            newTodo:{id:null,title:''}
+       },
+        methods:{
+//           定义方法，addTodo
+           addTodo:function(newTodo){
+//               newTodo放到todes数组中
+               this.todos.push(newTodo)
+               this.newTodo={id:null,title:''}
+           },
+            deleteTodo:function(index) {
+                this.todos.splice(index,1)
+            }
+        }
+    });
+</script>
+</body>
+</html>
