@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title></title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body>
+        <h1>v-if&v-else&v-show</h1>
+        <div id="app">
+            <div v-if="isLogin" class="panel panel-default">你好 jiegiser</div>
+            <div v-else="isLogin" class="panel panel-default">请登录</div>
+            <div v-show="isLogin" class="panel panel-default">请登录</div>
+        </div>
+    <script src="js/vue.js"></script>
+    <script>
+         new Vue({
+            el:'#app',
+            data:{
+                isLogin:false
+            }
+        })
+    </script>
+    </body>
+</html>

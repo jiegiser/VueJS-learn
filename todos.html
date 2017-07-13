@@ -25,16 +25,16 @@
                            </button>
                            </li>
                        </ul>
-                       <!--prevent指定submit事件触发那个方法-->
+                       <!--prevent修改他的默认提交行为，指定submit事件触发那个方法-->
                        <form v-on:submit.prevent="addTodo(newTodo)">
                            <div class="form-group">
-                               <input type="text" v-model="newTodo.title"
-
-                                      class="form-control"
-                                      placeholder="addTodo">
+                               <input type="text" 
+                               v-model="newTodo.title"
+                               class="form-control"
+                               placeholder="addTodo">
                            </div>
                            <div class="form-group">
-                               <button type="submit" class="btn btn-success">Add todo</button>
+                               <!-- <button type="submit" class="btn btn-success">Add todo</button> -->
                            </div>
                        </form>
                    </div>
@@ -57,12 +57,12 @@
        },
         methods:{
 //           定义方法，addTodo
-           addTodo:function(newTodo){
+           addTodo(newTodo){
 //               newTodo放到todes数组中
                this.todos.push(newTodo)
                this.newTodo={id:null,title:''}
            },
-            deleteTodo:function(index) {
+            deleteTodo(index) {
                 this.todos.splice(index,1)
             }
         }
