@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>V-text&v-html</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="css/bootstrap.mine.css" rel="stylesheet">
+    </head>
+    <body>
+        <div id="app">
+            <span>{{message}}</span>
+            <span v-text="message"></span>
+            <span v-html="html"></span>
+        </div>
+    <script src="js/vue.js"></script>
+    <script>
+        new new Vue({
+            el:'#app',
+            data:{
+                message:'Hello Vue',
+                dodo:'<h2>hello world</h2>'
+            }
+        })
+    </script>
+    </body>
+</html>
