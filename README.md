@@ -84,3 +84,25 @@ Vuejs中的v-text属性，在vuejs中可以使用v-text属性来控制整个标�
 	2. 如果在javascript中写有html标签，用v-text是输出不出来的，这时候我们就需要用v-html标签了。
 	
 
+
+### V-on：绑定事件监听器
+v-on 就是监听事件，可以用v-on指令监听DOM事件来触发一些javascript代码。
+	1. v-on 就是监听事件，可以用v-on指令监听DOM事件来触发一些javascript代码。
+	
+	2. 然后在methods中声明jiafen函数，
+	
+	3. 在data中声明fenshu值。
+	
+	4. 我们的v-on 还有一种简单的写法，就是用@代替。
+	
+	5. 我们除了绑定click之外，我们还可以绑定其它事件，比如键盘回车事件v-on:keyup.enter,现在我们增加一个输入框，然后绑定回车事件，回车后把文本框里的值加到我们的count上。
+	
+	当然可以使用
+	
+    <input type="text" v-on:keyup.enter="onEnter" v-model="secondCount">
+
+因为文本框的数字会默认转变成字符串，所以我们需要用parseInt()函数进行整数转换。
+
+最终结果：
+
+

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title></title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body>
+        <div id="app">
+            本场比赛得分：<h1>{{fenshu}}</h1>
+            <p>
+                <button v-on:click="jiafen" class="btn btn-default">加分</button>
+                <!--简写方法  -->
+                <button @click="jianfen" class="btn btn-default">减分</button><br>
+               <!--绑定键盘事件，可以使用键盘码，将enter可以换为13  -->
+                <input class="input" type="text" v-on:keyup.13="onEnter" v-model="fenshu2">
+            </p>
+        </div>
+    <script src="js/vue.js"></script>
+    <script>
+         new Vue({
+            el:'#app',
+            data:{
+                fenshu:0,
+                fenshu2:1
+            },
+            methods:{
+                jiafen:function(){
+                    this.fenshu++;
+                },
+                jianfen:function(){
+                    this.fenshu--;
+                },
+                onEnter:function(){
+                    this.fenshu=this.fenshu+ parseInt(this.fenshu2);
+                }
+            }
+        })
+    </script>
+    </body>
+</html>
