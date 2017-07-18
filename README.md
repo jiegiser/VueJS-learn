@@ -103,6 +103,55 @@ v-on 就是监听事件，可以用v-on指令监听DOM事件来触发一些javas
 
 因为文本框的数字会默认转变成字符串，所以我们需要用parseInt()函数进行整数转换。
 
-最终结果：
+### V-model双向数据绑定
+
+2017年7月18日
+12:29
+
+	1. V-model就是把数据绑定在特定的表单元素上，可以很容易的实现双向数据绑定。
+	
+	2. V-model的修饰符，
+	.lazy：取代 imput 监听 change 事件。懒加载，延缓了数据的加载，鼠标离开失去焦点的时候，数据加载。
+	.number：输入字符串转为数字。Message必须是数字，若首先输入字符串则还是可以绑定，若首先输入数字，则再接字符串，则不会出现数据绑定。
+	.trim：输入去掉首尾空格。
+	
+	
+	
+	3. 文本区域加入数据绑定
+	<textarea cols="30" rows="10" v-model="message"></textarea>
+	
+	4. 多选按钮绑定一个值
+	
+	
+	
+	
+	
+	5. 多选绑定一个数组
+	 <input type="checkbox" id="jiegiser" value="jieouba" v-model="web_names">
+	            <label for="isTrue">jiegiser</label>
+	            <input type="checkbox" id="jiegiser1" value="jiegiser1" v-model="web_names">
+	            <label for="isTrue">jiegiser1</label>
+	            <input type="checkbox" id="jiegiser2" value="jiegiser2" v-model="web_names">
+	            <label for="isTrue">jiegiser2</label>
+	            <p>{{web_names}}</p>
+	 vue中声明：
+	new Vue({
+	el: '#app',
+	data: {
+	message: 'Hello Vue',
+	isTrue: true,
+	web_names: [],
+	sex: '男'
+	}
+	})
+	6. 单选按钮绑定数据
+	<h1>单选按钮绑定数据</h1>
+	<p>
+	<input type="radio" id="one" value="男" v-model="sex">
+	<label for="one">男</label>
+	<input type="radio" id="two" value="女" v-model="sex">
+	<label for="two">女</label>
+	<p>你选择的性别是：{{sex}}</p>
+    </p>
 
 

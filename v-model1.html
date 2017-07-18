@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/bootstrap.mine.css" rel="stylesheet">
+</head>
+
+<body>
+    <div id="app">
+        <h1>数据绑定{{message}}</h1>
+        <h2>v-model:<input type="text" v-model="message"></h2>
+        <h2>v-model.lazy<input type="text" v-model.lazy="message"></h2>
+        <h2>v-model.number<input type="text" v-model.number="message"></h2>
+        <h2>v-model.trim<input type="text" v-model.trim="message"></h2>
+        <h1>文本区域加入数据绑定</h1>
+        <textarea cols="30" rows="10" v-model="message"></textarea>
+        <h1>多选框绑定一个数值</h1>
+        <input type="checkbox" id="isTrue" v-model="isTrue">
+        <label for="isTrue">{{isTrue}}</label>
+        <!--当我们勾选是，isTrue为true  -->
+        <hr/>
+        <h1>多选框绑定一个数组</h1>
+        <p>
+            <input type="checkbox" id="jiegiser" value="jieouba" v-model="web_names">
+            <label for="isTrue">jiegiser</label>
+            <input type="checkbox" id="jiegiser1" value="jiegiser1" v-model="web_names">
+            <label for="isTrue">jiegiser1</label>
+            <input type="checkbox" id="jiegiser2" value="jiegiser2" v-model="web_names">
+            <label for="isTrue">jiegiser2</label>
+            <p>{{web_names}}</p>
+        </p>
+        <h1>单选按钮绑定数据</h1>
+        <p>
+            <input type="radio" id="one" value="男" v-model="sex">
+            <label for="one">男</label>
+            <input type="radio" id="two" value="女" v-model="sex">
+            <label for="two">女</label>
+            <p>你选择的性别是：{{sex}}</p>
+        </p>
+    </div>
+    <script src="js/vue.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                message: 'Hello Vue',
+                isTrue: true,
+                web_names: [],
+                sex: '男'
+            }
+        })
+    </script>
+</body>
+
+</html>
