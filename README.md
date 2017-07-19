@@ -154,4 +154,62 @@ v-on 就是监听事件，可以用v-on指令监听DOM事件来触发一些javas
 	<p>你选择的性别是：{{sex}}</p>
     </p>
 
+### V-bind指令	
+    1. v-bind是处理HTML中的标签属性的，例如<div></div>就是一个标签，<img>也是一个标签，我们绑定<img>上的src进行动态赋值。
+	<div id="app">
+	    <img v-bind:src="imgSrc"  width="200px">
+	</div>
+	2. 在html中我们用v-bind:src=”imgSrc”的动态绑定了src的值，这个值是在vue构造器里的data属性中找到的。
+	
+	js文件：
+	
+	var app=new Vue({
+	    el:'#app',
+	    data:{
+	          imgSrc:'http://baidu.com/wp-content/uploads/2017/02/vue01-2.jpg'
+	     }
+	})
+	1
+	2
+	3
+	4
+	5
+	6
+	var app=new Vue({
+	    el:'#app',
+	    data:{
+	          imgSrc:'http://baidu.com/wp-content/uploads/2017/02/vue01-2.jpg'
+	     }
+	})
+	我们在data对象在中增加了imgSrc属性来供html调用。
+	3. v-bind 缩写
+	<!-- 完整语法 -->
+	<a v-bind:href="url"></a>
+	<!-- 缩写 -->
+	<a :href="url"></a>
+	4. 绑定CSS样式
+	在工作中我们经常使用v-bind来绑定css样式：
+	在绑定CSS样式是，绑定的值必须在vue中的data属性中进行声明。
+	1、直接绑定class样式
+	1	<div :class="className">1、绑定classA</div>
+	2、绑定classA并进行判断，在isOK为true时显示样式，在isOk为false时不显示样式。
+	1	<div :class="{classA:isOk}">2、绑定class中的判断</div>
+	3、绑定class中的数组
+	1	<div :class="[classA,classB]">3、绑定class中的数组</div>
+	4、绑定class中使用三元表达式判断
+	1	<div :class="isOk?classA:classB">4、绑定class中的三元表达式判断</div>
+	5、绑定style
+	1	<div :style="{color:red,fontSize:font}">5、绑定style</div>
+	6、用对象绑定style样式
+	1	<div :style="styleObject">6、用对象绑定style样式</div>
+	
+	1	var app=new Vue({
+	2	   el:'#app',
+	3	   data:{
+	4	       styleObject:{
+	5	           fontSize:'24px',
+	6	           color:'green'
+	7	            }
+	8	        }
+	9	})
 

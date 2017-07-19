@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>v-bind实例</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div id="app">
+        <h1>{{message}}</h1>
+        <img v-bind:src="imgSrc" width="200px" alt="">
+        <!--缩写方法，v-bing用：代替  -->
+        <a :href="webUrl" target="_blank">jiegiser</a>
+        <hr>
+        <div :class="classname">1. 绑定class</div>
+        <div :class="{classA:isok}">1. 绑定class中的判断</div>
+        <div :class="[classA,classB]">2. 绑定class中的数组</div>
+        <div :class="isok?classA:classB">3. 三元运算符</div>
+        <hr>
+        <div>
+            <input type="checkbox" id="isok" name="" value="" v-model="isok">
+            <label for="isok">isok={{isok}}</label>
+        </div>
+        <hr>
+        <div :style="{color:red,fontSize:font}">4. 绑定Style</div>
+        <div :style="styleObject">5. 绑定Style对象</div>
+    </div>
+    <style>
+        .classA {
+            color: red
+        }
+        
+        .classB {
+            font-size: 150%
+        }
+    </style>
+    <script src="js/vue.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                imgSrc: 'http://7xjyw1.com1.z0.glb.clouddn.com/20170227001137.jpg',
+                webUrl: 'http://jiegiser.win',
+                classname: 'classA',
+                isok: true,
+                classA: 'classA',
+                classB: 'classB',
+                red: 'red',
+                font: '20px',
+                styleObject: {
+                    color: 'green',
+                    // vue中font-size会出现错误，所以在这里写为fontSize
+                    fontSize: '24px'
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
