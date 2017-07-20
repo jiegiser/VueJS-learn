@@ -213,3 +213,30 @@ v-on 就是监听事件，可以用v-on指令监听DOM事件来触发一些javas
 	8	        }
 	9	})
 
+### 其他指令（v-pre指令、v-cloak指令、v-once指令）
+
+2017年7月20日
+12:33
+
+	1. v-pre指令
+
+v-pre指令
+	在模板中跳过vue的编译，直接输出原始值。就是在标签中加入v-pre就不会输出vue中的data值了。
+	1	<div v-pre>{{message}}</div>
+	这时并不会输出我们的message值，而是直接在网页中显示{{message}}
+	2. V-cloak指令
+v-cloak指令
+在vue渲染完指定的整个DOM后才进行显示。它必须和CSS样式一起使用，
+1	[v-cloak] {
+2	  display: none;
+3	}
+
+1	<div v-cloak>
+2	  {{ message }}
+3	</div>
+
+	3. V-once指令
+v-once指令
+在第一次DOM时进行渲染，渲染完成后视为静态内容，跳出以后的渲染过程。
+1	<div v-once>第一次绑定的值：{{message}}</div>
+2	<div><input type="text" v-model="message"></div>
