@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>vue.directive自定义指令</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div id="app">
+        <h1 v-jiegiser="color">{{num}}</h1>
+        <h2><button @click="add">ADD</button></h2>
+    </div>
+    <script src="js/vue.js"></script>
+    <script>
+        Vue.directive("jiegiser", function(el, binding) {
+            el.style = "color:" + binding.value;
+        });
+        new Vue({
+            el: '#app',
+            data: {
+                num: 10,
+                color: 'green'
+            },
+            methods: {
+                add: function() {
+                    this.num++
+                }
+
+            }
+        })
+    </script>
+</body>
+
+</html>

@@ -240,3 +240,50 @@ v-once指令
 在第一次DOM时进行渲染，渲染完成后视为静态内容，跳出以后的渲染过程。
 1	<div v-once>第一次绑定的值：{{message}}</div>
 2	<div><input type="text" v-model="message"></div>
+
+
+### Vue.directive 自定义指令
+
+2017年7月21日
+12:38
+
+一、什么是全局API？
+全局API并不在构造器里，而是先声明全局变量或者直接在Vue上定义一些新功能，Vue内置了一些全局API，比如我们今天要学习的指令Vue.directive。说的简单些就是，在构造器外部用Vue提供给我们的API函数来定义新的功能。
+二、Vue.directive自定义指令
+我们可以定义一些属于自己的指令，比如我们要定义一个v-jiegiser的指令，作用就是让文字变成绿色。
+在自定义指令前我们写一个小功能，在页面上有一个数字为10，数字的下面有一个按钮，我们每点击一次按钮后，数字加1.
+你不妨模仿下面的功能，在自己本地先写出这个效果。我用JSRun提供了预览和代码展示功能，你也可以在线调试。
+写好了这个功能，我们现在就自己定义一个全局的指令。我们这里使用Vue.directive( );
+1	Vue.directive('jiegiser',function(el,binding,vnode){
+2	        el.style='color:'+binding.value;
+3	});
+ 
+可以看到数字已经变成了绿色，说明自定义指令起到了作用。可能您看这个代码还是有些不明白的，比如传入的三个参数到底是什么。
+三、自定义指令中传递的三个参数
+el: 指令所绑定的元素，可以用来直接操作DOM。
+binding:  一个对象，包含指令的很多信息。
+vnode: Vue编译生成的虚拟节点。
+ 
+四、自定义指令的生命周期
+自定义指令有五个生命周期（也叫钩子函数），分别是 bind,inserted,update,componentUpdated,unbind
+	1. bind:只调用一次，指令第一次绑定到元素时调用，用这个钩子函数可以定义一个绑定时执行一次的初始化动作。
+	2. inserted:被绑定元素插入父节点时调用（父节点存在即可调用，不必存在于document中）。
+	3. update:被绑定于元素所在的模板更新时调用，而无论绑定值是否变化。通过比较更新前后的绑定值，可以忽略不必要的模板更新。
+	4. componentUpdated:被绑定元素所在模板完成一次更新周期时调用。
+	5. unbind:只调用一次，指令与元素解绑时调用。
+
+1	bind:function(){//被绑定
+2	     console.log('1 - bind');
+3	},
+4	inserted:function(){//绑定到节点
+5	      console.log('2 - inserted');
+6	},
+7	update:function(){//组件更新
+8	      console.log('3 - update');
+9	},
+10	componentUpdated:function(){//组件更新完成
+11	      console.log('4 - componentUpdated');
+12	},
+13	unbind:function(){//解绑
+14	      console.log('1 - bind');
+15	}
