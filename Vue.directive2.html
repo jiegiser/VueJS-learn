@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>vue.directive自定义指令</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div id="app">
+        <h1 v-jiegiser="color">{{num}}</h1>
+        <h2><button @click="add">ADD</button></h2>
+    </div>
+    <p>
+        <h2><button onclick="unbind()">解绑</button></h2>
+    </p>
+    <script src="js/vue.js"></script>
+    <script type="text/javascript">
+        function unbind() {
+            app.$destroy();
+        }
+        Vue.directive("jiegiser", {
+            bind: function(el, binding) { //被绑定
+                console.log('1 - bind');
+                el.style = "color:" + binding.value;
+            },
+            inserted: function() { //绑定到节点
+                console.log('2 - inserted');
+            },
+            update: function() { //组件更新
+                console.log('3 - update');
+            },
+            componentUpdated: function() { //组件更新完成
+                console.log('4 - componentUpdated');
+            },
+            unbind: function() { //解绑
+                console.log('5 - unbind');
+            }
+        });
+        new Vue({
+            el: '#app',
+            data: {
+                num: 10,
+                color: 'green'
+            },
+            methods: {
+                add: function() {
+                    this.num++
+                }
+
+            }
+        })
+    </script>
+</body>
+
+</html>
