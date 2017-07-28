@@ -247,17 +247,18 @@ v-once指令
 2017年7月21日
 12:38
 
-一、什么是全局API？
-全局API并不在构造器里，而是先声明全局变量或者直接在Vue上定义一些新功能，Vue内置了一些全局API，比如我们今天要学习的指令Vue.directive。说的简单些就是，在构造器外部用Vue提供给我们的API函数来定义新的功能。
-二、Vue.directive自定义指令
-我们可以定义一些属于自己的指令，比如我们要定义一个v-jiegiser的指令，作用就是让文字变成绿色。
-在自定义指令前我们写一个小功能，在页面上有一个数字为10，数字的下面有一个按钮，我们每点击一次按钮后，数字加1.
-你不妨模仿下面的功能，在自己本地先写出这个效果。我用JSRun提供了预览和代码展示功能，你也可以在线调试。
-写好了这个功能，我们现在就自己定义一个全局的指令。我们这里使用Vue.directive( );
-1	Vue.directive('jiegiser',function(el,binding,vnode){
-2	        el.style='color:'+binding.value;
-3	});
- 
+> 一、什么是全局API？
+	全局API并不在构造器里，而是先声明全局变量或者直接在Vue上定义一些新功能，Vue内置了一些全局API，比如我们今天要学习的指令Vue.directive。说的简单些就是，在构造器外部用Vue提供给我们的API函数来定义新的功能。
+	二、Vue.directive自定义指令
+	我们可以定义一些属于自己的指令，比如我们要定义一个v-jiegiser的指令，作用就是让文字变成绿色。
+	在自定义指令前我们写一个小功能，在页面上有一个数字为10，数字的下面有一个按钮，我们每点击一次按钮后，数字加1.
+	你不妨模仿下面的功能，在自己本地先写出这个效果。我用JSRun提供了预览和代码展示功能，你也可以在线调试。
+	写好了这个功能，我们现在就自己定义一个全局的指令。我们这里使用Vue.directive( );
+``` bash
+		Vue.directive('jiegiser',function(el,binding,vnode){
+		        el.style='color:'+binding.value;
+		});
+``` 
 可以看到数字已经变成了绿色，说明自定义指令起到了作用。可能您看这个代码还是有些不明白的，比如传入的三个参数到底是什么。
 三、自定义指令中传递的三个参数
 el: 指令所绑定的元素，可以用来直接操作DOM。
@@ -271,19 +272,87 @@ vnode: Vue编译生成的虚拟节点。
 	3. update:被绑定于元素所在的模板更新时调用，而无论绑定值是否变化。通过比较更新前后的绑定值，可以忽略不必要的模板更新。
 	4. componentUpdated:被绑定元素所在模板完成一次更新周期时调用。
 	5. unbind:只调用一次，指令与元素解绑时调用。
+``` bash
+	bind:function(){//被绑定
+	     console.log('1 - bind');
+	},
+	inserted:function(){//绑定到节点
+	      console.log('2 - inserted');
+	},
+	update:function(){//组件更新
+	      console.log('3 - update');
+	},
+	componentUpdated:function(){//组件更新完成
+	      console.log('4 - componentUpdated');
+	},
+	unbind:function(){//解绑
+	      console.log('1 - bind');
+	}
+```
 
-1	bind:function(){//被绑定
-2	     console.log('1 - bind');
-3	},
-4	inserted:function(){//绑定到节点
-5	      console.log('2 - inserted');
-6	},
-7	update:function(){//组件更新
-8	      console.log('3 - update');
-9	},
-10	componentUpdated:function(){//组件更新完成
-11	      console.log('4 - componentUpdated');
-12	},
-13	unbind:function(){//解绑
-14	      console.log('1 - bind');
-15	}
+
+###  vueJS-Vue.extend构造器的延伸
+
+
+2017年7月22日
+12:33
+
+> 一、什么是Vue.extend？
+Vue.extend 返回的是一个“扩展实例构造器”,也就是预设了部分选项的Vue实例构造器。经常服务于Vue.component用来生成组件，可以简单理解为当在模板中遇到该组件名称作为标签的自定义元素时，会自动调用“扩展实例构造器”来生产组件实例，并挂载到自定义元素上。
+由于我们还没有学习Vue的自定义组件，所以我们先看跟组件无关的用途。
+ 
+二、自定义无参数标签
+我们想象一个需求，需求是这样的，要在博客页面多处显示作者的网名，并在网名上直接有链接地址。我们希望在html中只需要写<author></author> ，这和自定义组件很像，但是他没有传递任何参数，只是个静态标签。
+我们的Vue.extend该登场了，我们先用它来编写一个扩展实例构造器。代码如下：
+操作步骤，我们首先需要做一个构造器。我们将扩展器加载到我们的页面中。
+整个代码如下：
+``` bash
+1	var authorExtend = Vue.extend({
+2	    template:"<p><a :href='authorUrl'>{{authorName}}</a></p>",
+3	    data:function(){
+4	    return{
+5	          authorName:'jiegiser',
+6	          authorUrl:'http://www.jiegiser.win'
+7	          }
+8	    }
+9	});
+```
+<!--more-->
+这时html中的标签还是不起作用的，因为扩展实例构造器是需要挂载的，我们再进行一次挂载。
+1	new authorExtend().$mount('author');
+这时我们在html写<author><author>就是管用的。我们来看一下全部代码：
+``` bash
+1	<!DOCTYPE html>
+2	<html lang="en">
+3	<head>
+4	    <meta charset="UTF-8">
+5	    <script type="text/javascript" src="../assets/js/vue.js"></script>
+6	    <title>vue.extend-扩展实例构造器</title>
+7	</head>
+8	<body>
+9	    <h1>vue.extend-扩展实例构造器</h1>
+10	    <hr>
+11	    <author></author>
+12	 
+13	    <script type="text/javascript">
+14	       var authorExtend = Vue.extend({
+15	           template:"<p><a :href='authorUrl'>{{authorName}}</a></p>",
+16	           data:function(){
+17	               return{
+18	                   authorName:'JSPang',
+19	                   authorUrl:'http://www.jspang.com'
+20	               }
+21	           }
+22	       });
+23	       new authorExtend().$mount('author');
+24	    </script>
+25	</body>
+26	</html>
+```
+最终实现结果：
+
+三、挂载到普通标签上
+还可以通过HTML标签上的id或者class来生成扩展实例构造器，Vue.extend里的代码是一样的，只是在挂载的时候，我们用类似jquery的选择器的方法，来进行挂载就可以了。
+> 	new authorExtend().$mount('#author');
+
+

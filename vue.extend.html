@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div id="app">
+        <h1>Vue.extend扩展实例构造器</h1>
+        <hr/>
+        <author></author>
+        <p id="jiegiser"></p>
+    </div>
+    <script src="js/vue.js"></script>
+    <script type="text/javascript">
+        // 首先构造一个模板，
+        var authorExtend = Vue.extend({
+            template: "<p><a :href='authorURL'>{{authorName}}</a></p>",
+            data: function() {
+                return {
+                    authorName: 'jiegiser',
+                    authorURL: "http://www.jiegiser.win"
+                }
+            }
+        });
+        new authorExtend().$mount("author");
+        new authorExtend().$mount("#jiegiser");
+    </script>
+
+</body>
+
+</html>
