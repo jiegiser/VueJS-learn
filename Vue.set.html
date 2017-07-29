@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Vue.set全局操作</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div id="app">
+        <div class="panel panel-primary">
+            <h1>{{count}}</h1>
+            <ul>
+                <li v-for="item in arr">{{item}}</li>
+            </ul>
+        </div>
+    </div>
+    <p><button onclick="add()" class="btn">Add</button></button>
+    </p>
+    <script src="js/vue.js"></script>
+    <script>
+        function add() {
+            // 使用vue.set，第一参数为我们定义的参数，第二个参数为，需要改变的值。最后一个值为每次改变所加的数值
+            // Vue.set(outData, 'count', 2);
+            // 或者可以直接使用app调用这个属性来每次加一。
+            // app.count++;
+            // 使用原生的方法。
+            //outData.count++;
+            // 改变数组,改变下标，vue无法进行改变，
+            // app.arr[1] = 'dd';
+            // 使用vue.set来改变下标的值.
+            Vue.set(app.arr, 1, 'dddd');
+        }
+        var outData = {
+            count: 1,
+            // goods: 'car'
+            arr: ['aa', 'bb', 'cc']
+        }
+        var app = new Vue({
+            el: '#app',
+            data: outData
+        });
+    </script>
+</body>
+
+</html>

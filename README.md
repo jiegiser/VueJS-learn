@@ -355,4 +355,80 @@ Vue.extend 返回的是一个“扩展实例构造器”,也就是预设了部�
 还可以通过HTML标签上的id或者class来生成扩展实例构造器，Vue.extend里的代码是一样的，只是在挂载的时候，我们用类似jquery的选择器的方法，来进行挂载就可以了。
 > 	new authorExtend().$mount('#author');
 
+### Vue.set全局操作
+> Vue.set 的作用就是在构造器外部操作构造器内部的数据、属性或者方法。比如在vue构造器内部定义了一个count为1的数据，我们在构造器外部定义了一个方法，要每次点击按钮给值加1.就需要用到Vue.set。
+#### 一、引用构造器外部数据：
+> 什么是外部数据，就是不在Vue构造器里里的data处声明，而是在构造器外部声明，然后在data处引用就可以了。外部数据的加入让程序更加灵活，我们可以在外部获取任何想要的数据形式，然后让data引用。
+看一个简单的代码：
+``` bash
+	//在构造器外部声明数据
+	var outData={
+	    count:1,
+	    goodName:'car'
+	};
+	var app=new Vue({
+	    el:'#app',
+    //引用外部数据
+	    data:outData
+	})
+```
+#### 二、在外部改变数据的三种方法：
+> 1、用Vue.set改变
+``` bash
+	function add(){
+	       Vue.set(outData,'count',4);
+	}
+```
+> 2、用Vue对象的方法添加
+``` bash
+	app.count++;
+```
+> 3、直接操作外部数据
+``` bash
+1	outData.count++;
+```
+> 其实这三种方式都可以操作外部的数据，Vue也给我们增加了一种操作外部数据的方法。
+#### 三、为什么要有Vue.set的存在?
+> 由于Javascript的限制，Vue不能自动检测以下变动的数组。
+*当你利用索引直接设置一个项时，vue不会为我们自动更新。
+*当你修改数组的长度时，vue不会为我们自动更新。
+看一段代码：
+> 
+1	<!DOCTYPE html>
+2	<html lang="en">
+3	<head>
+4	    <meta charset="UTF-8">
+5	    <script type="text/javascript" src="../assets/js/vue.js"></script>
+6	    <title>Vue.set 全局操作</title>
+7	</head>
+8	<body>
+9	    <h1>Vue.set 全局操作</h1>
+10	    <hr>
+11	    <div id="app">
+12	        <ul>
+13	            <li v-for=" aa in arr">{{aa}}</li>
+14	        </ul>
+15	       
+16	    </div>
+17	    <button onclick="add()">外部添加</button>
+18	    <script type="text/javascript">
+19	     
+20	        function add(){
+21	            console.log("我已经执行了");
+22	           app.arr[1]='ddd';
+23	           //Vue.set(app.arr,1,'ddd');
+24	        }
+25	        var outData={
+26	            arr:['aaa','bbb','ccc']
+27	        };
+28	        var app=new Vue({
+29	            el:'#app',
+30	            data:outData
+31	        })
+32	    </script>
+33	</body>
+34	</html>
+35```
+> 这时我们的界面是不会自动跟新数组的，我们需要用Vue.set(app.arr,1,’ddd’)来设置改变，vue才会给我们自动更新，这就是Vue.set存在的意义。
+ 
 
