@@ -355,6 +355,8 @@ Vue.extend 返回的是一个“扩展实例构造器”,也就是预设了部�
 还可以通过HTML标签上的id或者class来生成扩展实例构造器，Vue.extend里的代码是一样的，只是在挂载的时候，我们用类似jquery的选择器的方法，来进行挂载就可以了。
 > 	new authorExtend().$mount('#author');
 
+
+
 ### Vue.set全局操作
 > Vue.set 的作用就是在构造器外部操作构造器内部的数据、属性或者方法。比如在vue构造器内部定义了一个count为1的数据，我们在构造器外部定义了一个方法，要每次点击按钮给值加1.就需要用到Vue.set。
 #### 一、引用构造器外部数据：
@@ -431,4 +433,75 @@ Vue.extend 返回的是一个“扩展实例构造器”,也就是预设了部�
 35```
 > 这时我们的界面是不会自动跟新数组的，我们需要用Vue.set(app.arr,1,’ddd’)来设置改变，vue才会给我们自动更新，这就是Vue.set存在的意义。
  
+### Vue的生命周期（钩子函数）
 
+Vue一共有10个生命周期函数，我们可以利用这些函数在vue的每个阶段都进行操作数据或者改变内容。
+其实在Vue的官网有一张图已经很好的诠释了生命周期，我在这里就不再多讲了，直接贴图，然后上程序代码。
+<!--more-->
+![声明周期](vueJS-Vue的生命周期（钩子函数）/zqt.png)
+我们直接来看一段代码：
+``` bash
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Vue生命周期</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<script src="js/vue.js"></script>
+</head>
+<body>
+<div id="app">
+<div class="panel panel-primary">
+<h1>{{count}}</h1>
+<button @click="add" class="btn">add</button>
+<button onclick="app.$destroy()" class="btn">distroy</button>
+</div>
+</div>
+<script type="text/javascript">
+var app = new Vue({
+el: '#app',
+data: {
+count: 1
+},
+methods: {
+add: function() {
+this.count++;
+}
+},
+beforeCreate: function() {
+console.log('1-beforeCreate 初始化之前');
+},
+created: function() {
+console.log('2-created 创建完成');
+},
+beforeMount: function() {
+console.log('3-beforeMount 挂载之前');
+},
+mounted: function() {
+console.log('4-mounted 被挂载之后');
+},
+beforeUpdate: function() {
+console.log('5-beforeUpdate 数据更新前');
+},
+updated: function() {
+console.log('6-updated 被更新后');
+},
+activated: function() {
+console.log('7-activated');
+},
+deactivated: function() {
+console.log('8-deactivated');
+},
+beforeDestroy: function() {
+console.log('9-beforeDestroy 销毁之前');
+},
+destroyed: function() {
+console.log('10-destroyed 销毁之后')
+}
+});
+</script>
+</body>
+</html>
+```
+> 在浏览器中按F12，打开控制台输出，既可以看到操作过程，调用钩子函数的信息。
