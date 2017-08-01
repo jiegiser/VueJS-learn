@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div id="app">
+        <h1>{{message}}</h1>
+    </div>
+    <hr>
+    <!--第二种方法，在标签里面建立模板  -->
+    <template id="dd2">
+        <h2 style="color:red">我是template(标签)模板</h2>
+    </template>
+    <!--第三种模板  -->
+    <script type="x-template" id="dd3">
+        <h2 style="color:red">我是script(标签)模板</h2>
+    </script>
+    <script src="js/vue.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                message: 'Hello Vue'
+            },
+            template: "#dd3"
+                // 第一种直接在选项中建立模板，适合较小的模板
+                // template: `
+                // <h2 style="color:red">我是选项模板</h2>
+                // `
+        })
+    </script>
+</body>
+
+</html>

@@ -505,3 +505,87 @@ console.log('10-destroyed 销毁之后')
 </html>
 ```
 > 在浏览器中按F12，打开控制台输出，既可以看到操作过程，调用钩子函数的信息。
+
+### Template 制作模版
+
+2017年8月1日
+12:55
+
+#### 一、直接写在选项里的模板
+直接在构造器里的template选项后边编写。这种写法比较直观，但是如果模板html代码太多，不建议这么写。
+javascript代码如下：
+``` bash
+	var app=new Vue({
+	     el:'#app',
+	     data:{
+	         message:'hello Vue!'
+	      },
+	     template:`
+	        <h1 style="color:red">我是选项模板</h1>
+	     `
+	})
+```
+> 这里需要注意的是模板的标识不是单引号和双引号，而是，就是Tab上面的键。
+#### 二、写在<template>标签里的模板
+这种写法更像是在写HTML代码，就算不会写Vue的人，也可以制作页面。
+	    <template id="dd2">
+	             <h2 style="color:red">我是template标签模板</h2>
+	    </template>
+	 
+	    <script type="text/javascript">
+	        var app=new Vue({
+	            el:'#app',
+	            data:{
+	                message:'hello Vue!'
+	            },
+	            template:'#dd2'
+	        })
+	    </script>
+#### 三、写在<script>标签里的模板
+> 这种写模板的方法，可以让模板文件从外部引入。
+``` bash
+	    <script type="x-template" id="dd3">
+	        <h2 style="color:red">我是script标签模板</h2>
+	    </script>
+	 
+	    <script type="text/javascript">
+	        var app=new Vue({
+	            el:'#app',
+	            data:{
+	                message:'hello Vue!'
+	            },
+	            template:'#dd3'
+	        })
+	    </script>
+```
+全部代码如下：
+``` bash
+<body>
+<div id="app">
+<h1>{{message}}</h1>
+</div>
+<hr>
+<!--第二种方法，在标签里面建立模板 -->
+<template id="dd2">
+<h2 style="color:red">我是template(标签)模板</h2>
+</template>
+<!--第三种模板 -->
+<script type="x-template" id="dd3">
+<h2 style="color:red">我是script(标签)模板</h2>
+</script>
+<script src="js/vue.js"></script>
+<script>
+new Vue({
+el: '#app',
+data: {
+message: 'Hello Vue'
+},
+template: "#dd3"
+// 第一种直接在选项中建立模板，适合较小的模板
+// template: `
+// <h2 style="color:red">我是选项模板</h2>
+// `
+})
+</script>
+</body>
+```
