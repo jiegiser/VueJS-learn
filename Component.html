@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div id="app">
+        <h1>{{message}}</h1>
+        <hr>
+        <!--定义全局的组件  -->
+        <jiegiser></jiegiser>
+        <!--定义局部的组件  -->
+        <jie></jie>
+    </div>
+    <!--这种也可以显示我们的模板，我们定义的模板必须放在vue的控制范围，不然不会显示  -->
+    <div id="pp">
+        <jiegiser></jiegiser>
+    </div>
+    <script src="js/vue.js"></script>
+    <script>
+        // component是定义标签，在前面中我们使用指令可以定义标签属性，
+        // 全局定义的方法。
+        // 第一个参数为组件的名字,第二个可以为一个对象
+        Vue.component('jiegiser', {
+            template: `
+            <h2 style="color:red">我是全局的jiegiser组件</h2>
+            `
+        })
+        new Vue({
+            el: '#app',
+            // 定义局部的组件，这种可以定义多个组件
+            components: {
+                "jie": {
+                    template: `
+            <h2 style="color:green">我是局部的jie组件</h2>
+            `
+                }
+            }
+        })
+        new Vue({
+            el: '#pp',
+            data: {
+                message: 'Hello Vue'
+            }
+        })
+    </script>
+</body>
+
+</html>

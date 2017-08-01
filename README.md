@@ -589,3 +589,75 @@ template: "#dd3"
 </script>
 </body>
 ```
+
+### Component 初识组件
+
+2017年8月1日
+13:23
+
+前言：component组件是Vue中非常重要的一部分，所以你必须学好Vue component。其实组件就是制作自定义的标签，这些标签在HTML中是没有的。比如：jiegiser那我们就开始学习这种技巧吧。
+一、全局化注册组件
+全局化就是在构造器的外部用Vue.component来注册，我们注册现在就注册一个
+jiegiser的组件来体验一下。
+``` bash
+	<!DOCTYPE html>
+	<html lang="en">
+	<head>
+	    <meta charset="UTF-8">
+	    <script type="text/javascript" src="js/vue.js"></script>
+	    <title>component初试组件</title>
+	</head>
+	<body>
+	    <h1>component初试组件</h1>
+	    <hr>
+	    <div id="app">
+	        <jiegiser></jiegiser>
+	    </div>
+	 
+	    <script type="text/javascript">
+	        //注册全局组件
+	        Vue.component('jspang',{
+	            template:`<div style="color:red;">全局化注册的jiegiser标签</div>`
+	        })
+	        var app=new Vue({
+	            el:'#app',
+	            data:{
+	            }
+	        })
+	    </script>
+	</body>
+	</html>
+```
+我们在javascript里注册了一个组件，在HTML中调用了他。这就是最简单的一个组件的编写方法，并且它可以放到多个构造器的作用域里。
+#### 二、局部注册组件局部注册组件和全局注册组件是向对应的，局部注册的组件只能在组件注册的作用域里进行使用，其他作用域使用无效。
+``` bash
+1	<!DOCTYPE html>
+2	<html lang="en">
+3	<head>
+4	    <meta charset="UTF-8">
+5	    <script type="text/javascript" src="js/vue.js"></script>
+6	    <title>component-1</title>
+7	</head>
+8	<body>
+9	    <h1>component初试组件</h1>
+10	    <hr>
+11	    <div id="app">
+12	      <jie></jie>
+13	    </div>
+14	 
+15	    <script type="text/javascript">
+16	        var app=new Vue({
+17	            el:'#app',
+18	            components:{
+19	                "jie":{
+20	                    template:`<div style="color:red;">局部注册的jie标签</div>`
+21	                }
+22	            }
+23	        })
+24	    </script>
+25	</body>
+26	</html>
+```
+> 从代码中你可以看出局部注册其实就是写在构造器里，但是你需要注意的是，构造器里的components 是加s的，而全局注册是不加s的。
+#### 三、组件和指令的区别
+组件注册的是一个标签，而指令注册的是已有标签里的一个属性。在实际开发中我们还是用组件比较多，指令用的比较少。因为指令看起来封装的没那么好，这只是个人观点。
