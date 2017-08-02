@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>给定义的标签添加属性</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div id="app" class="panel panel-primary">
+        <h1>jiegiser来自{{message}}</h1>
+        <hr>
+        <!--定义局部的组件  -->
+        <jiegiser here="gsau"></jiegiser>
+        <!--这里需要知道vue中出现-是不实现的，我们需要使用驼峰命名的方法如下面的
+        from-here可以在定义属性时写为fromHere-->
+        <jiegiser from-here="gsau"></jiegiser>
+        <!--使用v-bind绑定数据，也可以使用简写的方法直接写一个：就可以了  -->
+        <jiegiser v-bind:here="message"></jiegiser>
+    </div>
+    <hr>
+    <script src="js/vue.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                // 绑定这里的数据，需要我们使用v-bind,将值绑定到我们的数值中
+                message: 'gsau'
+            },
+            // 定义局部的组件，这种可以定义多个组件
+            components: {
+                "jiegiser": {
+                    template: `<h3 style="color:green">jiegiser from {{here}}</h3>`,
+                    // 挂载属性,使用一个数组，因为属性可能有很多种,
+                    props: ['here', 'fromHere']
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

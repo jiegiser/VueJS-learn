@@ -661,3 +661,153 @@ jiegiser的组件来体验一下。
 > 从代码中你可以看出局部注册其实就是写在构造器里，但是你需要注意的是，构造器里的components 是加s的，而全局注册是不加s的。
 #### 三、组件和指令的区别
 组件注册的是一个标签，而指令注册的是已有标签里的一个属性。在实际开发中我们还是用组件比较多，指令用的比较少。因为指令看起来封装的没那么好，这只是个人观点。
+
+### Component 组件props 属性设置
+
+2017年8月2日
+12:43
+
+> props选项就是设置和获取标签上的属性值的，例如我们有一个自定义的组件<jiegiser></jiegiser>,这时我们想给他加个标签属性写成<jiegiser here='gsau'></jiegsier> 意思就是熊猫来自中国，当然这里的gsau可以换成任何值。定义属性的选项是props。
+#### 一、定义属性并获取属性值
+定义属性我们需要用props选项，加上数组形式的属性名称，例如：props:[‘here’]。在组件的模板里读出属性值只需要用插值的形式，例如{{ here }}.代码如下：
+``` bash
+<body>
+    <div id="app" class="panel panel-primary">
+        <h1>jiegiser来自{{message}}</h1>
+        <hr>
+        <!--定义局部的组件  -->
+        <jiegiser here="gsau"></jiegiser>
+        <!--这里需要知道vue中出现-是不实现的，我们需要使用驼峰命名的方法如下面的
+        from-here可以在定义属性时写为fromHere-->
+        <jiegiser from-here="gsau"></jiegiser>
+        <!--使用v-bind绑定数据，也可以使用简写的方法直接写一个：就可以了  -->
+        <jiegiser v-bind:here="message"></jiegiser>
+    </div>
+    <hr>
+    <script src="js/vue.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                // 绑定这里的数据，需要我们使用v-bind,将值绑定到我们的数值中
+                message: 'gsau'
+            },
+            // 定义局部的组件，这种可以定义多个组件
+            components: {
+                "jiegiser": {
+                    template: `<h3 style="color:green">jiegiser from {{here}}</h3>`,
+                    // 挂载属性,使用一个数组，因为属性可能有很多种,
+                    props: ['here', 'fromHere']
+                }
+            }
+        })
+    </script>
+</body>
+```
+> 上面的代码定义了jiegiser的组件，并用props设置了here的属性值，在here属性值里传递了gsau给组件。
+> 最后输出的结果是绿色字体的jiegiser from gsau
+#### 二、属性中带’-‘的处理方式
+> 我们在写属性时经常会加入’-‘来进行分词，比如：
+``` bash
+<jiegiser   from-here=”gsau”></jiegiser>
+```
+那这时我们在props里如果写成props:[‘form-here’]是错误的，我们必须用小驼峰式写法props:[‘formHere’]。
+html文件：
+``` bash
+        <!--这里需要知道vue中出现-是不实现的，我们需要使用驼峰命名的方法如下面的
+        from-here可以在定义属性时写为fromHere-->
+        <jiegiser from-here="gsau"></jiegiser>
+```
+javascript文件：
+``` bash
+        new Vue({
+            el: '#app',
+            data: {
+                // 绑定这里的数据，需要我们使用v-bind,将值绑定到我们的数值中
+                message: 'gsau'
+            },
+            // 定义局部的组件，这种可以定义多个组件
+            components: {
+                "jiegiser": {
+                    template: `<h3 style="color:green">jiegiser from {{here}}</h3>`,
+                    // 挂载属性,使用一个数组，因为属性可能有很多种,
+                    props: ['fromHere']
+                }
+            }
+        })
+```
+PS：因为这里有坑，所以还是少用-为好。
+三、在构造器里向组件中传值
+把构造器中data的值传递给组件，我们只要进行绑定就可以了。就是我们所学的指令v-bind:xxx.
+我们直接看代码:
+Html文件：
+``` bash
+        <!--使用v-bind绑定数据，也可以使用简写的方法直接写一个：就可以了  -->
+        <jiegiser v-bind:here="message"></jiegiser>
+```
+javascript文件：
+``` bash
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                // 绑定这里的数据，需要我们使用v-bind,将值绑定到我们的数值中
+                message: 'gsau'
+            },
+            // 定义局部的组件，这种可以定义多个组件
+            components: {
+                "jiegiser": {
+                    template: `<h3 style="color:green">jiegiser from {{here}}</h3>`,
+                    // 挂载属性,使用一个数组，因为属性可能有很多种,
+                    props: ['here', 'fromHere']
+                }
+            }
+        })
+    </script>
+```
+最后全部代码：
+``` bash
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>给定义的标签添加属性</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div id="app" class="panel panel-primary">
+        <h1>jiegiser来自{{message}}</h1>
+        <hr>
+        <!--定义局部的组件  -->
+        <jiegiser here="gsau"></jiegiser>
+        <!--这里需要知道vue中出现-是不实现的，我们需要使用驼峰命名的方法如下面的
+        from-here可以在定义属性时写为fromHere-->
+        <jiegiser from-here="gsau"></jiegiser>
+        <!--使用v-bind绑定数据，也可以使用简写的方法直接写一个：就可以了  -->
+        <jiegiser v-bind:here="message"></jiegiser>
+    </div>
+    <hr>
+    <script src="js/vue.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                // 绑定这里的数据，需要我们使用v-bind,将值绑定到我们的数值中
+                message: 'gsau'
+            },
+            // 定义局部的组件，这种可以定义多个组件
+            components: {
+                "jiegiser": {
+                    template: `<h3 style="color:green">jiegiser from {{here}}</h3>`,
+                    // 挂载属性,使用一个数组，因为属性可能有很多种,
+                    props: ['here', 'fromHere']
+                }
+            }
+        })
+    </script>
+</body>
+</html>
+```
