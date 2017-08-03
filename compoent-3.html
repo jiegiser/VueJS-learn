@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div id="app">
+        <h1>{{message}}</h1>
+        <hr>
+        <!--定义一个标签  -->
+        <jiegiser></jiegiser>
+    </div>
+    <script src="js/vue.js"></script>
+    <script>
+        // 声明子组件
+        var jie = {
+                template: `<h2 style="color:green;">jie from gsau</h2>`
+            }
+            // 声明一个对象组件
+        var jiegiserCompenent = {
+            template: `
+                <div>
+                <h1 style="color:red">jiegiser from gsau</h1>
+                <jie></jie>
+                </div>
+                `,
+            // 在父组件中，声明标签
+            components: {
+                "jie": jie
+            }
+        }
+        new Vue({
+            el: '#app',
+            // 定义局部的组件，这种可以定义多个组件
+            components: {
+                // 第一个为我们引用标签的值，第二个值为我们申明的组件，组件为一个对象
+                "jiegiser": jiegiserCompenent
+            }
+        })
+    </script>
+</body>
+
+</html>

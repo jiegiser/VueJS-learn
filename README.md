@@ -737,8 +737,8 @@ javascript文件：
         })
 ```
 PS：因为这里有坑，所以还是少用-为好。
-三、在构造器里向组件中传值
-把构造器中data的值传递给组件，我们只要进行绑定就可以了。就是我们所学的指令v-bind:xxx.
+#### 三、在构造器里向组件中传值
+> 把构造器中data的值传递给组件，我们只要进行绑定就可以了。就是我们所学的指令v-bind:xxx.
 我们直接看代码:
 Html文件：
 ``` bash
@@ -811,3 +811,112 @@ javascript文件：
 </body>
 </html>
 ```
+
+### Component 父子组件关系
+
+2017年8月3日
+12:39
+
+作用需求：在实际开发中我们经常会遇到在一个自定义组件中要使用其他自定义组件，这就需要一个父子组件关系。
+#### 一、构造器外部写局部注册组件
+上节课我们通过component将局部组件的编写放到了构造器内部，如果组件代码量很大，会影响构造器的可读性，造成拖拉和错误。
+我们把组件编写的代码放到构造器外部或者说单独文件。
+我们需要先声明一个对象,对象里就是组件的内容。
+``` bash
+        // 声明一个对象
+        var jiegiserCompenent = {
+            template: `<h1 style="color:red;">jiegiser from gsau</h1>`
+        }
+```
+声明好对象后在构造器里引用就可以了。
+``` bash
+        new Vue({
+            el: '#app',
+            // 定义局部的组件，这种可以定义多个组件
+            components: {
+                // 第一个为我们引用标签的值，第二个值为我们申明的组件，组件为一个对象
+                "jiegiser": jiegiserCompenent
+            }
+        })
+```
+html中引用
+``` bash
+<jiegiser></jiegiser>
+```
+#### 二、父子组件的嵌套
+我们先声明一个父组件，比如叫jiegiser，然后里边我们加入一个jie组件，我们来看这样的代码如何写。
+1. 我们首先需要在外面吗声明一个子组件。
+``` bash
+        // 声明子组件
+        var jie = {
+                template: `<h2 style="color:green;">jie from gsau</h2>`
+            }
+```
+2. 然后我们在父组件中使用子组件。
+``` bash
+            // 声明一个对象组件
+        var jiegiserCompenent = {
+            template: `
+                <div>
+                <h1 style="color:red">jiegiser from gsau</h1>
+                <jie></jie>
+                </div>
+                `,
+            // 在父组件中，声明jie标签
+            components: {
+                "jie": jie
+            }
+        }
+```
+整体代码如下：
+``` bash
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div id="app">
+        <h1>{{message}}</h1>
+        <hr>
+        <!--定义一个标签  -->
+        <jiegiser></jiegiser>
+    </div>
+    <script src="js/vue.js"></script>
+    <script>
+        // 声明子组件
+        var jie = {
+                template: `<h2 style="color:green;">jie from gsau</h2>`
+            }
+            // 声明一个对象组件
+        var jiegiserCompenent = {
+            template: `
+                <div>
+                <h1 style="color:red">jiegiser from gsau</h1>
+                <jie></jie>
+                </div>
+                `,
+            // 在父组件中，声明标签
+            components: {
+                "jie": jie
+            }
+        }
+        new Vue({
+            el: '#app',
+            // 定义局部的组件，这种可以定义多个组件
+            components: {
+                // 第一个为我们引用标签的值，第二个值为我们申明的组件，组件为一个对象
+                "jiegiser": jiegiserCompenent
+            }
+        })
+    </script>
+</body>
+
+</html>
+```
+
