@@ -919,4 +919,96 @@ html中引用
 
 </html>
 ```
+### Component 标签
 
+2017年8月5日
+11:50
+
+标签是Vue框架自定义的标签，它的用途就是可以动态绑定我们的组件，根据数据的不同更换不同的组件。
+``` bash
+<component></component>
+```
+1.我们先在构造器外部定义三个不同的组件，分别是componentA,componentB和componentC.
+``` bash
+        var componentA = {
+            template: `<div style="color:red;">I'm componentA</div>`
+        }
+        var componentB = {
+            template: `<div style="color:green;">I'm componentB</div>`
+        }
+        var componentC = {
+            template: `<div style="color:pink;">I'm componentC</div>`
+        }
+```
+2.我们在构造器的components选项里加入这三个组件。
+``` bash
+            components: {
+                "componentA": componentA,
+                "componentB": componentB,
+                "componentC": componentC,
+            },
+```
+3.我们在html里插入component标签，并绑定who数据，根据who的值不同，调用不同的组件。
+``` bash
+<component v-bind:is="who"></component>
+```
+这就是我们的组件标签的基本用法。我们提高以下，给页面加个按钮，每点以下更换一个组件。
+``` bash
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="js/vue.js"></script>
+    <title>component-4</title>
+</head>
+
+<body>
+    <h1>component-4</h1>
+    <hr>
+    <div id="app">
+        <!--我们所说的componemt组件其实就是我们的component标签,是vue自已定义的，可以动态的使用我们下面声明的组件  -->
+        <h1>
+            <component v-bind:is="who"></component>
+        </h1>
+        <br>
+        <button @click="changeComponent">change</button>
+    </div>
+    <script type="text/javascript">
+        var componentA = {
+            template: `<div style="color:red;">I'm componentA</div>`
+        }
+        var componentB = {
+            template: `<div style="color:green;">I'm componentB</div>`
+        }
+        var componentC = {
+            template: `<div style="color:pink;">I'm componentC</div>`
+        }
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                who: 'componentA'
+            },
+            components: {
+                "componentA": componentA,
+                "componentB": componentB,
+                "componentC": componentC,
+            },
+            methods: {
+                changeComponent: function() {
+                    if (this.who == 'componentA') {
+                        this.who = 'componentB';
+                    } else if (this.who == 'componentB') {
+                        this.who = 'componentC';
+                    } else {
+                        this.who = 'componentA';
+                    }
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
+```
