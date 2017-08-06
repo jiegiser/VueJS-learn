@@ -2,11 +2,10 @@
 <html lang="en">
 
 <head>
-    <title></title>
     <meta charset="UTF-8">
     <script type="text/javascript" src="js/vue.js"></script>
+    <title>component-4</title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
-
 </head>
 
 <body>
@@ -16,18 +15,18 @@
             <component v-bind:is="who"></component>
         </h1>
         <br>
-        <button @click="changeComponent">change</button>
+        <button @click="changeComponent" class="btn">change</button>
     </div>
     <script type="text/javascript">
         // 外部申明一个组件
         var componentA = {
-            template: `<div style="color:red">我是componentA</div>`
+            template: `<div style="color:red;" class="panel panel-primary">I'm componentA</div>`
         }
         var componentB = {
-            template: `<div style="color:green">我是componentB</div>`
+            template: `<div style="color:green;" class="panel panel-primary">I'm componentB</div>`
         }
         var componentC = {
-            template: `<div style="color:pink">我是componentC</div>`
+            template: `<div style="color:pink;" class="panel panel-primary">I'm componentC</div>`
         }
         var app = new Vue({
             el: '#app',
@@ -43,11 +42,11 @@
             methods: {
                 changeComponent: function() {
                     if (this.who == 'componentA') {
-                        this.who == 'componentB';
+                        this.who = 'componentB';
                     } else if (this.who == 'componentB') {
-                        this.who == 'componentC';
+                        this.who = 'componentC';
                     } else {
-                        this.who == 'componentA';
+                        this.who = 'componentA';
                     }
                 }
             }
