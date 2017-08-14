@@ -1012,3 +1012,89 @@ html中引用
 
 </html>
 ```
+### propsData Option  全局扩展的数据传递
+> propsData 不是和属性有关，他用在全局扩展时进行传递数据。先回顾一下全局扩展的知识，做一个jiegiser的扩展标签出来。实际我们并比推荐用全局扩展的方式作自定义标签，我们学了组件，完全可以使用组件来做，这里只是为了演示propsData的用法。
+代码如下：
+``` bash
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <script src="js/vue.js"></script>
+</head>
+
+<body>
+    <h1>propsData Option</h1>
+    <hr>
+    <jiegiser></jiegiser>
+    <script type="text/javascript">
+        // 一个扩展，可以放一个模板
+        var jiegiser_a = Vue.extend({
+            // 要传一个插值a
+            template: `<p>{{message}}</p>`,
+            data: function() {
+                return {
+                    message: 'Hello ,I am jiegiser!'
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
+```
+> 扩展标签已经做好了，这时我们要在挂载时传递一个数字过去，我们就用到了propsData。
+
+我们用propsData三步解决传值：
+
+1、在全局扩展里加入props进行接收。propsData:{a:1}
+
+2、传递时用propsData进行传递。props:[‘a’]
+
+3、用插值的形式写入模板。{{ a }}
+
+完整代码：
+``` bash
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <script src="js/vue.js"></script>
+</head>
+
+<body>
+    <h1>propsData Option</h1>
+    <hr>
+    <jiegiser></jiegiser>
+    <script type="text/javascript">
+        // 一个扩展，可以放一个模板
+        var jiegiser_a = Vue.extend({
+            // 要传一个插值a
+            template: `<p>{{message}}-{{a}}</p>`,
+            data: function() {
+                return {
+                    message: 'Hello ,I am jiegiser!'
+                }
+            },
+            props: ['a']
+        });
+        // 挂载扩展,这里，跟jquery类似的用法，可以使用id,前面加一个#，或者根据类来选择，使用.
+        new jiegiser_a({
+            propsData: {
+                a: 1
+            }
+        }).$mount('jiegiser');
+    </script>
+</body>
+
+</html>
+``` bash
+> 总结：propsData在实际开发中我们使用的并不多，我们在后边会学到Vuex的应用，他的作用就是在单页应用中保持状态和数据的。
