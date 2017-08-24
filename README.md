@@ -1098,3 +1098,97 @@ html中引用
 </html>
 ``` bash
 > 总结：propsData在实际开发中我们使用的并不多，我们在后边会学到Vuex的应用，他的作用就是在单页应用中保持状态和数据的。
+
+
+### computed Option  计算选项
+> 我们总说选项，选项就是我们声明vue对象里面的el，data等等，computed 的作用主要是对原数据进行改造输出。改造输出：包括格式的编辑，大小写转换，顺序重排，添加符号……。
+
+#### 一、格式化输出结果：
+
+我们先来做个读出价格的例子：我们读书的原始数据是price:100    但是我们输出给用户的样子是（￥100元）。
+主要的javascript代码：
+``` bash
+                    newPrice: function() {
+                        // 返回的price是我们data里面的price，我们在这里要进行重新改造返回的price
+                        return this.price = '￥' + this.price + '元';
+                    },
+```
+全部代码：
+``` bash
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <h1>computed Option 计算选项</h1>
+    <br>
+    <hr>
+    <div class="panel panel-primary">
+        <div class="panel-heading">computed Option 计算选项</div>
+        <div class="panel-body">
+            <div id="app">
+                <h2>{{newPrice}}</h2>
+            </div>
+        </div>
+        <script src="js/vue.js"></script>
+        <script type="text/javascript">
+            new Vue({
+                //选项就是我们这里面的el，data等等，
+                el: '#app',
+                data: {
+                    // 我们并没有改变这里的data值
+                    price: 100,
+                    newsList: newsList
+                },
+                // 在这里面可以写我们自己的选项
+                computed: {
+                    newPrice: function() {
+                        // 返回的price是我们data里面的price，我们在这里要进行重新改造返回的price
+                        return this.price = '￥' + this.price + '元';
+                    }
+                }
+            })
+        </script>
+</body>
+
+</html>
+```
+现在输出的结果就是：￥100元。
+#### 二、用计算属性反转数组
+
+> 例如：我们得到了一个新闻列表的数组，它的顺序是安装新闻时间的顺序正序排列的，也就是早反生的新闻排在前面。这是反人类的，我们需要给他反转。这时我们就可以用到我们的计算属性了。
+
+没有排序的新闻列表，是安装日期正序排列的。
+``` bash
+  var newsList = [{
+                title: '安徽一4A级景区被撤销 为申报4A给官员送钱送黄金',
+                date: '2017/8/24'
+            }, {
+                title: 'Note 8"有喜无惊"发布，三星能在中国翻身吗？',
+                date: '2017/8/24'
+            }, {
+                title: '公开反对中企投资港口 斯里兰卡司法部长被解职',
+                date: '2017/8/25'
+            }, {
+                title: '陕西一河道8天3人溺亡 当地镇长不接电话不回短信',
+                date: '2017/8/26'
+            }];
+```
+我们希望输出的结果：
+![结果](vueJS-computed-Option-计算选项/jg.jpg)
+我们的在computed里的javascript代码：我们用js原生方法给数组作了反转。
+``` bash
+                computed: {
+                    reversNews: function() {
+                        // 反转
+                        return this.newsList.reverse();
+                    }
+                }
+```
+> 总结：computed 属性是非常有用，在输出数据前可以轻松的改变数据。

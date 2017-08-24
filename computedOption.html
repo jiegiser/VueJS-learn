@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <h1>computed Option 计算选项</h1>
+    <br>
+    <hr>
+    <div class="panel panel-primary">
+        <div class="panel-heading">computed Option 计算选项</div>
+        <div class="panel-body">
+            <div id="app">
+                <h2>{{newPrice}}</h2>
+                <ul>
+                    <li v-for="item in reversNews">
+                        {{item.title}}--{{item.date}}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <script src="js/vue.js"></script>
+        <script type="text/javascript">
+            var newsList = [{
+                title: '安徽一4A级景区被撤销 为申报4A给官员送钱送黄金',
+                date: '2017/8/24'
+            }, {
+                title: 'Note 8"有喜无惊"发布，三星能在中国翻身吗？',
+                date: '2017/8/24'
+            }, {
+                title: '公开反对中企投资港口 斯里兰卡司法部长被解职',
+                date: '2017/8/25'
+            }, {
+                title: '陕西一河道8天3人溺亡 当地镇长不接电话不回短信',
+                date: '2017/8/26'
+            }]
+            new Vue({
+                //选项就是我们这里面的el，data等等，
+                el: '#app',
+                data: {
+                    // 我们并没有改变这里的data值
+                    price: 100,
+                    newsList: newsList
+                },
+                // 在这里面可以写我们自己的选项
+                computed: {
+                    newPrice: function() {
+                        // 返回的price是我们data里面的price，我们在这里要进行重新改造返回的price
+                        return this.price = '￥' + this.price + '元';
+                    },
+                    reversNews: function() {
+                        // 反转
+                        return this.newsList.reverse();
+                    }
+                }
+            })
+        </script>
+</body>
+
+</html>
