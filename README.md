@@ -1192,3 +1192,122 @@ html中引用
                 }
 ```
 > 总结：computed 属性是非常有用，在输出数据前可以轻松的改变数据。
+
+
+### Methods Option  方法选项
+> 在以前的学习中，已经大量的使用了构造器里的methods选项，但是并没有详细了解过，Methods里面包括我们鼠标点击按钮的失去焦点事件啊，鼠标点击事件啊，事件的响应方法用Methids来体现，我们做一个最简单的使用方法，一个数字，每点击一下按钮加2.
+``` bash
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <h1>Methods Option 方法选项</h1>
+    <br>
+    <hr>
+    <div class="panel panel-primary">
+        <div class="panel-heading">Methods Option 方法选项</div>
+        <div class="panel-body">
+            <div id="app">
+                <h1 class="panel">{{a}}</h1>
+                <button @click="add(2)" class="btn btn-primary">add</button>
+            </div>
+        </div>
+        <script src="js/vue.js"></script>
+        <script>
+            new Vue({
+                el: '#app',
+                data: {
+
+                    a: 1
+                },
+                methods: {
+                    add: function(num) {
+                        if (num != '') {
+                            this.a += num;
+                        } else {
+                            this.a++;
+                        }
+                    }
+                }
+            })
+        </script>
+</body>
+
+</html>
+```
+#### 一、methods中参数的传递
+使用方法和正常的javascript传递参数的方法一样，分为两部：
+
+1、在methods的方法中进行声明，比如我们给add方法加上一个num参数，就要写出
+``` bash
+add:function(num){}.
+```
+2、调用方法时直接传递，比如我们要传递2这个参数，我们在button上就直接可以写。
+``` bash
+<button @click=”add(2)”></button>.
+```
+现在知道了加参数的方法，看一段完整的代码，代码中给add添加了num参数，并在按钮上调用传递了。
+``` bash
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <h1>Methods Option 方法选项</h1>
+    <br>
+    <hr>
+    <div class="panel panel-primary">
+        <div class="panel-heading">Methods Option 方法选项</div>
+        <div class="panel-body">
+            <div id="app">
+                <h1 class="panel">{{a}}</h1>
+                <button @click="add(2)" class="btn btn-primary">add</button>
+            </div>
+        </div>
+        <script src="js/vue.js"></script>
+        <script>
+            new Vue({
+                el: '#app',
+                data: {
+
+                    a: 1
+                },
+                methods: {
+                    add: function(num, event) {
+                        if (num != '') {
+                            this.a += num;
+                        } else {
+                            this.a++;
+                        }
+                    }
+                }
+            })
+        </script>
+</body>
+
+</html>
+```
+这时，再点击按钮是每次加2个数字。
+#### 二、methods中的$event参数
+传递的$event参数都是关于你点击鼠标的一些事件和属性。我们先看看传递的方法。
+
+传递：
+``` bash
+<button @click=”add(2,$event)”>add</button> 
+```
+我们这时候可以打印一下，看看event到底是个怎样的对象。你会发现，它包含了大部分鼠标事件的属性。
+![结果](vueJS-Methods-Option-方法选项/jg.jpg)
+--------------------------------------等等更新--------------------------------------

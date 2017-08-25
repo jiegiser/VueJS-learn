@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <h1>Methods Option 方法选项</h1>
+    <br>
+    <hr>
+    <div class="panel panel-primary">
+        <div class="panel-heading">Methods Option 方法选项</div>
+        <div class="panel-body">
+            <div id="app">
+                <h1 class="panel">{{a}}</h1>
+                <button @click="add(2,$event)" class="btn btn-primary">add</button>
+            </div>
+        </div>
+        <script src="js/vue.js"></script>
+        <script>
+            new Vue({
+                el: '#app',
+                data: {
+
+                    a: 1
+                },
+                methods: {
+                    add: function(num, event) {
+                        if (num != '') {
+                            this.a += num;
+                        } else {
+                            this.a++;
+                        }
+                        // 我们鼠标点击按钮时，一系列的属性
+                        console.log(event);
+                    }
+                }
+            })
+        </script>
+</body>
+
+</html>
