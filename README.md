@@ -1368,3 +1368,69 @@ add:function(num){}.
 ``` bash
             <button onclick="app.add(9)" class="btn btn-primary">外部ADD</button>
 ```
+所有代码：
+``` bash
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <h1>Methods Option 方法选项</h1>
+    <br>
+    <hr>
+    <div class="panel panel-primary">
+        <div class="panel-heading">Methods Option 方法选项</div>
+        <div class="panel-body">
+            <div id="app">
+                <h1 class="panel">{{a}}</h1>
+                <button @click="add(2,$event)" class="btn btn-primary">add</button>
+                <hr>
+                <p>
+                    <!-- 调用构造器中的原始的函数 -->
+                    <btn @click.native="add(5)"></btn>
+                </p>
+            </div>
+            <hr>
+            <button onclick="app.add(9)" class="btn btn-primary">外部ADD</button>
+        </div>
+        <script src="js/vue.js"></script>
+        <script>
+            // 声明一个组件
+            var btn = {
+                template: `<button class="btn btn-primary">组件ADD</button>`
+            }
+            var app = new Vue({
+                el: '#app',
+                data: {
+
+                    a: 1
+                },
+                // 挂载我们的组件
+                components: {
+                    "btn": btn,
+                },
+                methods: {
+                    add: function(num, event) {
+                        if (num != '') {
+                            this.a += num;
+                        } else {
+                            this.a++;
+                        }
+                        // 我们鼠标点击按钮时，一系列的属性
+                        console.log(event);
+                    }
+                }
+            })
+        </script>
+</body>
+
+</html>
+```
+效果显示：
+![效果](vueJS-Methods-Option-方法选项/11.jpg)
