@@ -1311,3 +1311,60 @@ add:function(num){}.
 我们这时候可以打印一下，看看event到底是个怎样的对象。你会发现，它包含了大部分鼠标事件的属性。
 ![结果](vueJS-Methods-Option-方法选项/jg.jpg)
 --------------------------------------等等更新--------------------------------------
+#### 三、native  给组件绑定构造器里的原生事件。
+在实际开发中经常需要把某个按钮封装成组件，然后反复使用，如何让组件调用构造器里的方法，而不是组件里的方法。就需要用到我们的.native修饰器了。
+
+现在我们把我们的add按钮封装成组件：
+
+声明btn对象
+``` bash
+            // 声明一个组件
+            var btn = {
+                template: `<button class="btn btn-primary">组件ADD</button>`
+            }
+ ```
+ 在构造器里进行挂载组件：
+ ``` bash
+                 // 挂载我们的组件
+                components: {
+                    "btn": btn,
+                },
+ ```
+ 用.native修饰器来调用构造器里的add方法
+``` bash
+                 <p>
+                    <!-- 调用构造器中的原始的函数 -->
+                    <btn @click.native="add(5)"></btn>
+                </p>
+```
+ #### 四、作用域外部调用构造器里的方法
+ 这种不经常使用，如果你出现了这种情况，说明你的代码组织不够好。
+ 首先需要声明vue对象，将其赋值为app：
+ ``` bash
+               var app = new Vue({
+                el: '#app',
+                data: {
+
+                    a: 1
+                },
+                // 挂载我们的组件
+                components: {
+                    "btn": btn,
+                },
+                methods: {
+                    add: function(num, event) {
+                        if (num != '') {
+                            this.a += num;
+                        } else {
+                            this.a++;
+                        }
+                        // 我们鼠标点击按钮时，一系列的属性
+                        console.log(event);
+                    }
+                }
+            })
+```
+然后在标签中使用构造器中的方法
+``` bash
+            <button onclick="app.add(9)" class="btn btn-primary">外部ADD</button>
+```
