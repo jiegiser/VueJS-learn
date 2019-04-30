@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../lib/js/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <span>{{message}}</span>
+        <br>
+        <input type="text" v-model='message'>
+        <br>
+        <span v-html="link"></span>
+
+        <!-- 跳过编译{{}} -->
+        <span v-pre>{{message}}</span>
+        <br>
+        <!-- {{}}可以进行Javascript表达式进行简单的运算，三元运算等 -->
+        <span>{{num/5}}</span>
+        <br>
+        <span>{{isOk?'确定':'取消'}}</span>
+        <br>
+        <!-- 过滤器 也可以进行串联，可以进行传参，过滤函数接受参数（这里需要注意的是，默认过滤函数的第一个参数为我们要过滤的字段）-->
+        <span>{{date|formatDate}}</span>
+    </div>
+    <script>
+        var padDate = function (value) {
+            return value < 10 ? '0' + value : value;
+        }
+        var data = {
+            message: 'jie',
+            link: `<a href="#">链接</a>`,
+            num: 10,
+            isOk: true,
+            date: new Date()
+        };
+        var vm = new Vue({
+            el: '#app',
+            data,
+            filters: {
+                formatDate(value) {
+                    let date = new Date(value);
+                    let year = date.getFullYear();
+                    let mouth = padDate(date.getMonth() + 1);
+                    let day = padDate(date.getDay());
+                    let hours = padDate(date.getHours());
+                    let minutes = padDate(date.getMinutes());
+                    let seconds = padDate(date.getSeconds());
+                    // 将时间进行拼接
+                    return `${year}-${mouth}-${day} ${hours}:${minutes}:${seconds}`;
+                }
+            },
+            // 这些钩子跟el类似，并且钩子的他this指向调用它的Vue实例。
+            created() {
+                console.log("实例创建完成，尚未挂载，$el还不可用");
+            },
+            mounted() {
+                console.log('el挂载到实例上之后调用，一般我们的第一个业务逻辑会在这里开始。发送ajax请求');
+                var _this = this;
+                this.timer = setInterval(function () {
+                    _this.date = new Date();//修改数据date
+                }, 1000);
+            },
+            beforeDestroy() {
+                console.log('实例销毁之前调用，主要解绑一些使用addEventListener监听的事件。');
+                if (this.timer) {
+                    clearInterval(this.timer);
+                }
+            },
+            
+        });
+
+    </script>
+
+</body>
+
+</html>

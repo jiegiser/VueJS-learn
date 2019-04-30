@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>方法与事件</title>
+    <link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="../lib/js/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        点击次数{{count}}
+        <!-- 这里需要注意的是add后面不需要加上括号，如果该方法由参数，默认会将元素事件对象event传入 -->
+        <button @click="add">+</button>
+        <!-- 可以将表达式直接写在这里 -->
+        <button @click="count--">-</button>
+        <!-- vue提供了一个$event变量，用于访问元素DOM事件， -->
+        <a href="jiegiser.win" @click="handleClick('静止打开',$event)">链接</a>
+        <br>
+        <!-- 修饰符
+        上面使用preventDefault()进行阻止默认事件的执行，也可以使用Vue事件的修饰符来实现，
+        有以下修饰符：.stop:阻止单击事件冒泡，.prevent：提交事件不再重载页面 （阻止默认事件）
+        修饰符之间可以串联  -->
+        <!-- 阻止单击事件冒泡 -->
+        <a href="#" @click.stop='handleClick'>点击</a>
+        <!-- 提交事件不再重载页面 -->
+        <form  @click.prevent='handleClick'>点击</form>
+        <!-- 修饰符可以串联 -->
+        <a href="#" @click.stop.prevent='handleClick'>点击</a>
+        <!-- 只有修饰符 -->
+        <form href="#" @click.prevent>点击</form>
+        <!-- 添加事件侦听器时使用事件捕获模式 -->
+        <div @click.capture='handleClick'>...</div>
+        <!-- 只当事件在该元素本身（而不是子元素）触发时触发回调 -->
+        <div @click.self='handleClick'>...</div>
+        <!-- 只触发一次，组件同样适用 -->
+        <div @click.once='handleClick'>...</div>
+        <!-- 表单监听键盘事件，可以使用按键修饰符。 -->
+        <!-- 只有在keyCode为13时，调用vm.submit方法 -->
+        <input type="text" @keyup.13="submit">
+        <!-- 自己配置具体按键 使用Vue.config.keyCodes-->
+
+    </div>
+    <script>
+        var data = {
+            count: 0
+        };
+        var app = new Vue({
+            el: '#app',
+            data,
+            methods: {
+                add() {
+                    this.count++;
+                },
+                handleClick(message, event) {
+                    console.log(event);
+                    // 阻止默认事件执行。
+                    event.preventDefault();
+                    window.alert(message);
+                }
+            },
+        });
+        // 全局定义后，就可以使用@keyup.f1
+        Vue.config.keyCodes.f1=112;
+    </script>
+</body>
+
+</html>

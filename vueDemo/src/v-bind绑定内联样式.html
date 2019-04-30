@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>绑定内联样式</title>
+    <link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="../lib/js/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- v-bind绑定style跟绑定class一样，也有对象语法跟数组语法，看起来像直接写在了元素上 -->
+        <div :style="{'color':color,'fontSize':fontSize+'px'}">文本</div>
+        <!-- 直接写在class中不便于阅读，一般写在data中或computed里 -->
+        <div :style="styless">直接写在class中不便于阅读，一般写在data中或computed里</div>
+        <!-- 应用多个样式对象时，使用数组语法 -->
+        <div :style="[styleA,styleB]">应用多个样式对象时，使用数组语法</div>
+        <!-- 最常用计算属性 -->
+        <div :style="styless1">最常用计算属性</div>
+    </div>
+    <script>
+        var data = {
+            color: 'red',
+            fontSize: 14,
+            styless: {
+                color: 'red',
+                fontSize: 14 + 'px',
+            },
+            styleA: {
+                color: 'red',
+            },
+            styleB: {
+                fontSize: 18 + 'px',
+            }
+        };
+        var app = new Vue({
+            el: '#app',
+            data,
+            computed: {
+                styless1() {
+                    return {
+                        color: 'green',
+                        fontSize: 14 + 'px',
+                    }
+                }
+            },
+        });
+    </script>
+</body>
+
+</html>

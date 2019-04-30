@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>组件通信</title>
+    <link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="../lib/js/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 1. 自定义事件 -->
+        <!-- 当子组件需要向父组件传递数据时，就要用到自定义事件。使用v-on可以用于组件之间的自定义事件 ；
+        子组件用$emit()来触发事件，父组件用$on()来监听子组件的事件；
+        父组件也可以直接在子组件的自定义标签上使用v-on来监听子组件触发的自定义事件，如下：
+        -->
+        <p>总数：{{total}}</p>
+        <!-- 子组件有两个按钮，分别是实现加一与减一的效果，在改变组件的data里面的counter后，通过$emit()再把
+        它传递给父组件，父组件用v-on::increase和v-on::reduce，$emit方法的第一个参数是自定义事件的名称，
+        例如示例中的increase和reduce后面的参数都是要传递的数据，可以不写或写多个。
+        -->
+        <my-component @increase="handleGetTotal" @reduce="handleGetTotal"></my-component>
+        <!-- 除了用v-on在组件上监听自定事件外，也可以监听DOM事件，这时可以用.native修饰符表示监听的是一个原生事件，
+        监听的是该组件的根元素， -->
+        <my-coms @click.native="handleClick"></my-coms>
+
+        <!-- 2. 使用v-model -->
+        <!-- 在自定义组件上使用v-model
+        -->
+        <p>总数：{{totals}}</p>
+        <my-cp v-model="totals"></my-cp>
+        <!--  
+            这里需要注意的是，这次组件$emit()的事件名是特殊的input，在使用组件的父级，并没有在 my-cp上使用@input
+        而是直接使用了v-model绑定的一个数据totals，这也可以称作是一个语法糖，因为上面的示例可以间接地用自定义事件来实现；
+          -->
+        <p>总数：{{totals}}</p>
+        <my-cps @input="handleGetTotals"></my-cps>
+        <!-- v-model还可以用来创建自定义的表单输入组件，进行数据双向绑定，如下面 
+        实现这样一个具有双向绑定的v-model组件要满足下面要求：
+        1. 接收一个value属性，
+        2. 在有新的value时触发input事件
+        -->
+        <hr>
+        <p>总数：{{num}}</p>
+        <my-nums v-model="num"></my-nums>
+        <button @click="handleReduceNum">-1按钮</button>
+
+        <!-- 3. 非父子组件通信 -->
+        <!-- 
+            非父子附件一般有两种，兄弟组和跨多级组件；
+            实现：首先创建一个名为bus的空的Vue实例，里面没有任何内容，然后全局定义了组件component-a，最后创建Vue
+            实例app，在app初始化时，也就是生命周期mounted钩子函数里监听了来自bus的事件on-message，而在组件component-a
+            中，点击按钮会通过bus把事件on-message发出去，此时app就会接受来自bus的事件，进而在回调里完成自己的业务逻辑。
+         -->
+         <hr>
+         {{message}}
+         <component-a></component-a>
+
+         <!-- 4. 实现组件间通讯的另一个方法：父链 -->
+         <!-- 在子组件中，使用this.$parent可以直接访问该组件的父实例或组件，父组件也可以用过this.$children访问它所有的
+        子组件，而且可以递归向上或向下无线访问。知道根实例或最外层的组件，如下 -->
+        {{parents}}
+        <component-parent></component-parent>
+         
+        <!-- 5. 实现组件间通讯的另一个方法：组件索引 -->
+        <!-- 当子组件较多时，通过this.$children来一一遍历我们需要的一个组件实例是比较困难的，尤其是组件动态渲染时，
+        他们的序列是固定的，Vue提供了子组件索引的方法，用特殊的属性ref来为子组件指定一个索引名称，代码：
+        -->
+        <!-- 在父组件模板中，子组件标签上使用ref指定一个名称，并在父组件内通过this.$refs来访问指定名称的子组件
+        
+        这里需要注意的是，$refs只在组件渲染完成后才填充，并且他是非相应式的，他仅仅作为一个直接访问子组件的应急方案
+    应当避免在模板或计算属性中s使用refs
+    -->
+        <button @click="handleRef">通过ref获取子组件实例</button>
+        <component-ref ref="comA"></component-ref>
+    </div>
+    <script>
+        // 一个空的vue实例作为中央事件总线（bus），
+        /*
+        深入使用，可以扩展bus的实例，给他添加data、methods、computed等选项。在业务中，或者是在协同开发时，非常有用，
+        因为经常需要共享一些通用的信息，比如用户登录的名称，邮箱等等，还有用户的授权token。只需要在初始化时让bus获取一次
+        任何时间、任何组件就可以从中直接使用了。
+        */
+        var bus=new Vue();
+        Vue.component('my-component', {
+            template: `<div>
+                        <button @click="handleIncrease">+1</button>
+                        <button @click="handleReduce">-1</button>
+                      </div>`,
+            data: () => {
+                return {
+                    counter: 0
+                }
+            },
+            methods: {
+                handleIncrease() {
+                    this.counter++;
+                    this.$emit('increase', this.counter);
+                },
+                handleReduce() {
+                    this.counter--;
+                    this.$emit('reduce', this.counter);
+                }
+            },
+        });
+        Vue.component('my-coms', {
+            template: `<button>组件</button>`
+        });
+
+        /*
+        这里需要注意的是，这次组件$emit()的事件名是特殊的input，在使用组件的父级，并没有在 my-cp上使用@input
+        而是直接使用了v-model绑定的一个数据totals，这也可以称作是一个语法糖，因为上面的示例可以间接地用自定义事件来实现；       
+        */
+        Vue.component('my-cp', {
+            template: `<button @click="handleClicks">+1</button>`,
+            data: function () {
+                return {
+                    counter1: 0
+                }
+            },
+            methods: {
+                handleClicks() {
+                    this.counter1++;
+                    this.$emit('input', this.counter1)
+                }
+            }
+        });
+        Vue.component('my-cps', {
+            template: `<button @click="handleClicks">+1</button>`,
+            data: function () {
+                return {
+                    counter1: 0
+                }
+            },
+            methods: {
+                handleClicks() {
+                    this.counter1++;
+                    this.$emit('input', this.counter1)
+                }
+            }
+        });
+        /*
+        实现这样一个具有双向绑定的v-model组件要满足下面要求：
+        1. 接收一个value属性，
+        2. 在有新的value时触发input事件
+        */
+        Vue.component('my-nums', {
+            props: ['value'],
+            template: `<input :value="value" @input="updateValue">`,
+            methods: {
+                updateValue(event) {
+                    console.log(event);
+                    this.$emit('input', event.target.value);
+                }
+            }
+        });
+
+        Vue.component('component-a',{
+            template:`<button @click="handleEvent">传递事件</button>`,
+            methods:{
+                handleEvent(){
+                    // 点击将事件on-message发布出去
+                    bus.$emit('on-message','来自组件component-a的内容');
+                }
+            }
+        });
+
+        // 父链
+        Vue.component('component-parent',{
+            template:`<button @click="handleEvent">通过父链直接修改参数</button>`,
+            methods:{
+                handleEvent(){
+                    // 访问到父链后，可以做任何操作，比如直接修改数据
+                    this.$parent.parents='来自组件component-parent的内容'
+                }
+            }
+        });
+
+        // 子组件索引
+        Vue.component('component-ref',{
+            template:`<div>子组件</div>`,
+            data:()=>{
+                return {
+                    refs:'子组件内容'
+                }
+            }
+        });
+        var app = new Vue({
+            el: '#app',
+            data: {
+                total: 0,
+                totals: 0,
+                num: 0,
+                message:'',
+                parents:''
+            },
+            methods: {
+                handleGetTotal: function (total) {
+                    this.total = total;
+                },
+                handleClick() {
+                    alert('绑定原生事件');
+                },
+                handleGetTotals(total) {
+                    this.totals = total;
+                },
+                handleReduceNum() {
+                    this.num--;
+                },
+                handleRef(){
+                    // 通过$refs来访问指定的实例
+                    let msg=this.$refs.comA.refs;
+                    console.log(msg);
+                }
+            },
+            // 用于组件之间传递--监听来自bus的事件，
+            mounted() {
+                var _this=this;
+                // 在实例初始化，监听来自bus实例的事件
+                bus.$on('on-message',(msg)=>{
+                    _this.message=msg;
+                });
+            },
+        });
+    </script>
+</body>
+
+</html>

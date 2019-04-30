@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>开发一个实时时间转化指令v-time</title>
+</head>
+<body>
+    <div id="app">
+        <!-- 实现一个将表达式传入的时间戳实时转换为相对时间 -->
+        <div v-time="timeNow"></div>
+        <div v-time="timeBefore"></div>
+    </div>
+    <script src="../lib/js/vue.js"></script>
+    <script src="../lib/js/time.js"> </script>
+    <script src="../lib/js/indetime.js"> </script>
+</body>
+</html>

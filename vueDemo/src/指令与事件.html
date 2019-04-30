@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>指令与事件</title>
+    <script src="../lib/js/vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <span v-if="show">显示这段文字</span>
+        <br>
+        <!-- v-bind用于绑定属性 -->
+        <a v-bind:href="url">杰的博客</a>
+        <br>
+        <!-- v-on指令，用来绑定事件监听器。还有dbclick事件、keyup事件、mousemove事件等 -->
+        <button v-on:click="handleClose">点击隐藏</button>
+        <br>
+        <!-- 表达式除了为方法名，也可以直接写内联语句 -->
+        <button v-on:click="show=false">点击隐藏2</button>
+    </div>
+    <script>
+        var data={
+            show:true,
+            url:'http:jiegiser.win',
+        }
+        var app=new Vue({
+            el:'#app',
+            data,
+            // 这里只是vue实例中的函数，methods可以通过vue实例进行调用，或者this进行互相调用
+            methods: {
+                handleClose(){
+                    if(this.show==true){
+                        this.show=false;
+                    }else{
+                        this.show=true
+                    }
+                },
+                init(value){
+                    console.log(value);
+                }
+            },
+            mounted() {
+                this.init('在el挂载之后调用,也是初始化时');
+            },
+        });
+    </script>
+</body>
+</html>

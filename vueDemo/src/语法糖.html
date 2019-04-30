@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>语法糖</title>
+    <script src="../lib/js/vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <!-- 语法糖也就是在不影响功能的情况下，简写vue里面实例属性，达到同样的效果，比如就是v-on可以写成@，v-bind写成： -->
+        <a v-bind:href='url'>链接</a>
+        <br>
+        <img v-bind:src='imgUrl'>
+        <!-- 缩写为 -->
+        <a :href='url'>链接</a>
+        <br>
+        <img :src='imgUrl'>
+        <!-- v-on使用@ -->
+        <button v-on:click='handClose'>按钮</button>
+        <button @click='handClose'>按钮2</button>
+    </div>
+    <script>
+        var data={
+            url:'http:jiegiser.win',
+            imgUrl:'./img/tu.png'
+        };
+        var app=new Vue({
+            el:'#app',
+            data,
+            methods: {
+                
+            },
+            mounted() {
+                
+            },
+        });
+    </script>
+</body>
+</html>

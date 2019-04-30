@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Render函数</title>
+    <script src="../lib/js/vue.js"></script>
+</head>
+
+<body>
+    <!-- Virtual Dom 并不是真正意思上的DOM，而是一个轻量级的Javascript对象 
+    虚拟DOM就是通过一种VNode类表达的，每个DOM元素或组件都对应一个VNode对象。
+    -->
+
+    <div id="app">
+        <!-- 1. 通过render渲染锚点 -->
+        <anchor :level="2" title="特性">特性</anchor>
+        <!-- 2. 对于重复渲染多个组件（或元素） -->
+        <eles></eles>
+
+        <!-- 3. 对于要渲染含有组件的slot，复用要复杂一些，需要将slot的每个子节点都要克隆一份 -->
+        <eless>
+            <div>
+                <childs></childs>
+            </div>
+        </eless>
+
+        <!-- 4. 使用Javascript代替模板功能
+        在render函数中，不再需要使用Vue内置指令，比如v-if等，没法使用它们，无论是实现什么功能，都可以使用原生的Javascript
+        -->
+
+        <eleja :show="show"></eleja>
+        <button @click="show=!show">切换show</button>
+        <!-- 5. v-for在render函数中实现 -->
+        <elefor :list="list"></elefor>
+        <!-- 使用Javascript的if else渲染列表 -->
+        <eleli :list="lists"></eleli>
+        <button @click="handleClicks">显示列表</button>
+        <!-- 上面的例子，使用template写法 -->
+        <ul v-if="lists.length">
+            <li v-for="item in lists">{{item}}</li>
+        </ul>
+        <p v-else>列表为空</p>
+
+        <!-- Render函数里没有v-model对应的API,需要自己实现逻辑 -->
+        <elemodel></elemodel>
+        <!-- 其实v-model就是prop:value和event:input组合使用的一个语法糖，虽然在Render写起来比较复杂，但是可以自由控制
+            深入到底层；
+            上面的例子使用template写法如下：
+        -->
+        <input type="text" v-model="val">
+        <p>输入的内容：{{val}}</p>
+
+        <!-- 对于时间修饰符和按键修饰符，基本也需要自己实现，下面是大部分对应的是实现方案
+        .stop:  event.stopPropagation();
+        .prevent   event.preventDefault()
+        .selt     if(event.target!==eventcurrentTarget) return
+        .center/.13  if(event.keyCode!==13return 替换13位需要的keyCode
+        .ctrl/.alt/.shift/.meta  if(!event.ctrlKey) return 根据需要替换的ctrlKey为altKey、shiftKey或metaKey
+
+
+        对于事件修饰符.capture和.once,Vue提供了特殊的前缀，可以直接写在on的配置里
+        .capture   前缀：！
+        .once      ~
+        .capture.once 或.once.capture ~!
+        写法如下
+        -->
+        <!-- on:{
+            '!click':this.doThisInCapturingMode,
+            '~keyup':this.doThisOnce
+        } -->
+        <!-- 下面的示例简单模拟了聊天发送内容的场景 -->
+        <elesendmsg></elesendmsg>
+
+        <!-- 对于slot可以用this.$slots来访问，在Render函数中会大量使用，不过没有使用slot时，会显示一个默认的内容，
+        这部分逻辑需要我们自己实现。
+        -->
+        <eleslot></eleslot>
+        <eleslot>
+            <p>slot的内容</p>
+        </eleslot>
+    </div>
+    <script>
+        /*
+        需要注意的是，所有的组件树，如果VNode是组件或含有组件的slot，那么VNode必须唯一，
+        */
+        Vue.component('anchor', {
+            props: {
+                level: {
+                    type: Number,
+                    required: true
+                },
+                title: {
+                    type: String,
+                    default: ''
+                }
+            },
+            // render函数有一个createElement,它构成了Vue virtual Dom的模板,他有三个参数
+            render(createElement) {
+                // 用来创建元素
+                /*
+                第一个参数必选,可以是一个HTML标签,也可以是一个组件或函数,第二个是可选参数,
+                数据对象,在template中使用,第三个是子节点,也是可选参数,用法一致,
+                */
+                return createElement(
+                    // 根据等级创建h标签
+                    'h' + this.level, [
+                        // 在h标签里创建a标签,a标签的锚点就是输入的title
+                        createElement(
+                            'a', {
+                                domProps: {
+                                    href: '#' + this.title
+                                }
+                            },
+                            // 将组件内默认的放在这里,,默认插槽
+                            this.$slots.default
+                        )
+                    ]
+                );
+
+                // // @returns {VNode}
+                // createElement(
+                //     // {String | Object | Function}
+                //     // 一个 HTML 标签名、组件选项对象，或者
+                //     // resolve 了上述任何一种的一个 async 函数。必填项。
+                //     'div',
+
+                //     // {Object}
+                //     // 一个与模板中属性对应的数据对象。可选。
+                //     {
+                //         // (详情见下一节)
+                //     },
+
+                //     // {String | Array}
+                //     // 子级虚拟节点 (VNodes)，由 `createElement()` 构建而成，
+                //     // 也可以使用字符串来生成“文本虚拟节点”。可选。
+                //     [
+                //         '先写一些文字',
+                //         createElement('h1', '一则头条'),
+                //         createElement(MyComponent, {
+                //             props: {
+                //                 someProp: 'foobar'
+                //             }
+                //         })
+                //     ]
+                // )
+            },
+        });
+
+        // 局部声明组件
+        var Child = {
+            render(createElement) {
+                return createElement('p', 'text');
+            }
+        }
+        Vue.component('eles', {
+            render(createElement) {
+                return createElement(
+                    'div',
+                    // 听过循环和工厂函数可以渲染5个重复的子组件Child。
+                    Array.apply(null, {
+                        length: 5
+                    }).map(() => {
+                        return createElement(Child);
+                    })
+                );
+            }
+        });
+
+        // 全局注册组件
+        Vue.component('childs', {
+            render:function(createElement) {
+                return createElement('p', 'text时')
+            }
+        });
+
+        /*
+        在Render函数里创建一个cloneVNode的工厂函数，通过递归将slot所有子节点都克隆了一份，并对VNode的关键属性
+        也进行复制。
+        */
+        Vue.component('eless', {
+            render:function(createElement) {
+                // 克隆slot节点的方法
+                function cloneVNode(vnode){
+                    // 递归遍历所有子节点，并克隆
+                    const clonedChildren = vnode.children && vnode.children.map(function(vnode){
+                        return cloneVNode(vnode);
+                    });
+                    const cloned = createElement(
+                        vnode.tag,
+                        vnode.data,
+                        clonedChildren
+                    );
+                    cloned.text = vnode.text;
+                    cloned.isComment = vnode.isComment;
+                    cloned.componentOptions = vnode.componentOptions;
+                    cloned.elm = vnode.elm;
+                    cloned.context = vnode.context;
+                    cloned.ns = vnode.ns;
+                    cloned.isStatic = vnode.isStatic;
+                    cloned.key = vnode.key;
+
+                    return cloned;
+                }
+                const vNodes = this.$slots.default;
+                const clonedVNodes = vNodes.map(function(vnode){
+                    return cloneVNode(vnode);
+                });
+                return createElement('div', [
+                    vNodes,
+                    clonedVNodes
+                ]);
+            }
+
+        });
+
+        // Javascript代替模板功能
+        Vue.component('eleja',{
+            render(createElement){
+                if(this.show){
+                    return createElement('p','show的值为true')
+                }else{
+                    return createElement('p','show的值为false')
+                }
+            },
+            props:{
+                show:{
+                    type:Boolean,
+                    default:false
+                }
+            },
+        });
+
+        // render实现v-for循环
+        Vue.component('elefor',{
+            // 就是使用Javascript创建元素
+            render(createElement){
+                let nodes=[];
+                // 实现v-for循环创建元素
+                for(let i=0;i<this.list.length;i++){
+                    nodes.push(createElement('p',this.list[i]));
+                }
+                return createElement('div',nodes)
+            },
+            props:{
+                list:{
+                    type:Array
+                }
+            }
+        });
+        Vue.component('eleli',{
+            render(createElement){
+                if(this.list.length){
+                    return createElement('ul',this.list.map((item)=>{
+                        return createElement('li',item);
+                    }));
+                }else{
+                    return createElement('p','列表为空');
+                }
+            },
+            props:{
+                list:{
+                    type:Array,
+                    default(){
+                        return [];
+                    }
+                }
+            }
+        });
+        // 使用render实现v-model的API
+        Vue.component('elemodel',{
+            render(createElement){
+                let _this=this;
+                return createElement(
+                    'div',
+                    [
+                        createElement(
+                            'input',
+                            {
+                                domProps:{
+                                    value:this.value
+                                },
+                                on:{
+                                    input:(event)=>{
+                                        _this.value=event.target.value;
+                                    }
+                                }
+                            }
+                        ),
+                        createElement('p',`value: ${this.value}`)
+                    ]
+                    )
+            },
+            data(){
+                return{
+                    value:''
+                }
+            }
+        });
+
+        Vue.component('elesendmsg',{
+            render(createElement){
+                let _this=this;
+                // 渲染聊天内容列表
+                if(this.listmsg.length){
+                    var listNode=createElement('ul',this.listmsg.map((item)=>{
+                        return createElement('li',item)
+                    }));
+                }else{
+                    var listNode=createElement('p','暂无聊天内容');
+                }
+                return createElement('div',[
+                    listNode,
+                    createElement('input',{
+                        attrs:{
+                            placeholder:'输入内容，按回车键发送'
+                        },
+                        style:{
+                            width:'200px'
+                        },
+                        on:{
+                            keyup(event){
+                                // 如果不是回车键，不能发送消息
+                                if(event.keyCode!==13)return;
+                                // 添加输入的内容到聊天列表
+                                _this.listmsg.push(event.target.value);
+                                // 发送后，清空输入框
+                                event.target.value='';
+                            }
+                        }
+                    })
+                ])
+            },
+            data(){
+                return{
+                    value:'',
+                    listmsg:['sd']
+                }
+            }
+        });
+
+        // 实现插槽
+        Vue.component('eleslot',{
+            render(createElement){
+                if(this.$slots.default===undefined){
+                    return createElement('div','没有使用slot时显示的文本')
+                }else{
+                    return createElement('div',this.$slots.default)
+                }
+            }
+        })
+        var app = new Vue({
+            el: '#app',
+            data:{
+                show:false,
+                list:[
+                    '《Vue实战》',
+                    '《Javascript高级程序设计》',
+                    '《犀牛书》'
+                ],
+                lists:[],
+                val:''
+            },
+            methods:{
+                handleClicks(){
+                    this.lists=[
+                    '《Vue实战》',
+                    '《Javascript高级程序设计》',
+                    '《犀牛书》'
+                    ];
+                }
+            }
+        });
+        // 对于第二个参数"数据对象",具体选项如下:
+        // {
+        //     // 和v-bind:calss一样的API
+        //     'class':{
+        //         foo:true,
+        //         bar:false
+        //     },
+        //     // 和v-bind:style一样的API
+        //     style:{
+        //         color:'red',
+        //         fontSize:'14px'
+        //     },
+        //     // 正常的HTML特性
+        //     attrs:{
+        //         id:'foo'
+        //     },
+        //     // 组件props
+        //     props:{
+        //         myProp:'bar'
+        //     },
+        //     // DOM属性
+        //     domProps:{
+        //         innerHTML:'baz'
+        //     },
+        //     // 自定义事件监听器"on"
+        //     //不支持v-on:keyup.enter的修饰器
+        //     // 需要手动匹配keyCode
+        //     on:{
+        //         click:this.clickHandler
+        //     },
+        //     // 仅对于组件，用于监听原生事件，而不是组件使用vm.$emit触发自定事件
+        //     nativeOn:{
+        //         click:this.nativeClickHandler
+        //     },
+        //     // 自定义指令
+        //     directives:[
+        //         {
+        //             name:'my-custom-directive',
+        //             value:'2',
+        //             expression:'1+1',
+        //             arg:'foo',
+        //             modifiers:{
+        //                 bar :true
+        //             }
+        //         }
+        //     ],
+        //     // 作用域slot
+        //     // {name:props+>VNode | Array<VNode>}
+        //         scopedSlots:{
+        //             default:props => h('span',props.text)
+        //         },
+        //     // 如果子组件有定义slot的名称
+        //     slot:'name-of-slot'
+        //     // 其他特殊顶层属性
+        //     key:'myKey',
+        //     ref:'myRef'
+        // }
+
+
+
+
+    </script>
+
+    // 在template中，组件的标签上使用形容v-bind：class、b-bind：style、v-on：click这样的指令，在Render函数将其
+    // 写在了数据对象里，比如下面的组件，用传统的template写：
+
+
+    // <div id="app">
+        // <ele></ele>
+        // </div>
+    //
+    <script>
+        //    Vue.component('ele',{
+        //        template:`<div id="element" :class="{show:show}" @click="handleClick">
+        //            文本内容
+        //         </div>`,
+        //         data() {
+        //             return {
+        //                 show:true
+        //             }
+        //         },
+        //         methods: {
+        //             handleClick(){
+        //                 console.log('clicked!');
+        //             }
+        //         },
+        //    })
+        // </script>
+
+
+
+    // 使用Render改写后的代码
+    // <div id="app">
+        // <ele></ele>
+        // </div>
+    //
+    <script>
+        //     Vue.component('ele',{
+        //         render(createElement){
+        //             return createElement(
+        //                 'div',
+        //                 {
+        //                     // 动态绑定class，同：class
+        //                     class:{
+        //                         'show':this.show
+        //                     },
+        //                     // 普通html特性
+        //                     attrs:{
+        //                         id:'element',
+        //                     },
+        //                     // 给div绑定click事件
+        //                     on:{
+        //                         click:this.handleClick
+        //                     }
+        //                 },
+        //                 '文本内容'
+        //             )
+        //         },
+        //         data() {
+        //             return {
+        //                 show:true
+        //             }
+        //         },
+        //         methods: {
+        //             handleClick(){
+        //                 console.log('clicked!');
+        //             }
+        //         },
+        //     })
+        // </script>
+
+</body>
+
+</html>

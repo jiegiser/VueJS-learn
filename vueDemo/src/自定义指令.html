@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>自定义指令</title>
+    <script src="../lib/js/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <input type="text" v-focus>
+        <div v-test:msg.a.b="message"></div>
+        <!-- 如果需要多个值，可以直接传入一个Javascript对象字面量 -->
+        <div v-morevalue="{msg:'hello',name:'Jiegiser'}"></div>
+    </div>
+    <script>
+        /*
+        自定义指令的选项是由几个钩子函数组成的，每个都是可选的：
+        bind：只调用一次，指令第一次绑定到元素时调用，用这个钩子函数可以定义一个在绑定时执行一次的初始化动作；
+        inserted：被绑定元素插入父节点时调用（父节点存在即可调用，不必存在于document中）
+        update：被绑定元素所在的模板更新时调用，而不论绑定值是否变化，通过比较更新前后的绑定值，可以忽略不必要的模板更新
+        componentUpdated：被绑定元素所在模板完成一次更新周期时调用；
+        unbind：只调用一次，指令与元素解绑时调用
+
+
+        大多数使用场景是在bind钩子里绑定一些事件。比如在document上用addEventListener绑定，在unbind里用removeEventListenrt
+        进行解绑，
+        */
+        // 全局注册指令
+        Vue.directive('focus', {
+            /*
+            钩子函数的参数：
+            el：指令所绑定的元素，可以用来直接操作DOM；
+            binding：一个对象包含下面的属性：
+               name：指令名，不包括v-前缀；
+               value：指令的绑定值，例如v-my-directive="1+1"，value的值就是2.
+               oldValue：指令绑定的前一个值，仅在update和componentUpdated钩子中可用，无论值是否改变都可用。
+               expression：绑定值的字符串形式，例如v-my-directive="1+1"expression就是"1+1
+               arg：传给指令的参数，例如：v-my-directive:foo，arg就是foo
+               modifiers：一个包含修饰符的对象，例如v-my-directive.foo.bar,修饰符对象modifiers的值是{foo:true,bar:true}
+            vnode:Vue编译生成的虚拟节点，
+            oldVnode：上一个虚拟节点，仅在update和componentUpdated钩子中可用
+            */
+            inserted(el) {
+                console.log(el);
+                el.focus();
+            }
+        });
+        Vue.directive('test', {
+            bind(el, binding, vnode) {
+                let keys = [];
+                for (let i in vnode) {
+                    keys.push(i);
+                }
+                el.innerHTML = `name: ${binding.name}
+            </br>
+                              value: ${binding.value}
+            </br>
+                              expression: ${binding.expression}
+                            </br>
+                            argument: ${binding.arg}
+                        </br>
+                        modifiers :${JSON.stringify(binding.modifiers)}
+                    </br>
+                    vnode ${keys.join(',')}
+                              `;
+            },
+        });
+
+        Vue.directive('morevalue',{
+            bind(el,binding,vnode){
+                console.log(binding.value.msg);
+                console.log(binding.value.name);
+            }
+        })
+        var data = {
+            message:"some text"
+        };
+        var app = new Vue({
+            el: '#app',
+            data,
+            // 局部注册指令
+            // directives:{
+            //     focus:{
+            //         // 指令选项
+            //     }
+            // }
+        });
+    </script>
+</body>
+
+</html>

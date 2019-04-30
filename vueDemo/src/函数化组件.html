@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>函数化组件</title>
+    <script src="../lib/js/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- Vue提供了一个functional的布尔值选项，设置为true可以使组件无状态和无实例，也就是没有data和this上下文，
+        这样用render函数返回虚拟节点可以更容易渲染，因为函数化组件只是一个函数，渲染开销要小很多；
+        使用函数化组件时，Render函数提供了第二个参数，context来提供临时上下文，组件需要的data、props、slots、children
+        parent都是通过这个上下文来传递的，比如this.level要改写为context.props.level,this.$slots.default改写成
+        context.children
+        -->
+        <!-- 
+            函数化组件的应用场景：1. 程序化地在多个组件中选择一个，2. 在将children、props、data传递给以组件之前操作他们
+         -->
+        <smaart-item :data="data"><p>ssss</p></smaart-item>
+        <button @click="change('img')">切换为图片组件</button>
+        <button @click="change('video')">切换为视频组件</button>
+        <button @click="change('text')">切换为文本组件</button>
+    </div>
+    <script>
+        // 图片组件
+        let ImgItem = {
+            props: ['data'],
+            render(createElement) {
+                return createElement(
+                    'div',
+                    [
+                        createElement('p', '图片组件'),
+                        createElement('img', {
+                            attrs: {
+                                src: this.data.url
+                            }
+                        })
+                    ]
+                )
+            },
+        }
+        // 视频组件
+        let VideoItem = {
+            props: ['data'],
+            render(createElement) {
+                return createElement(
+                    'div',
+                    [
+                        createElement('p', '视频组件'),
+                        createElement('video', {
+                            attrs: {
+                                src: this.data.url,
+                                controls: 'controls',
+                                autoplay: 'autoplay'
+                            }
+                        })
+                    ]
+                )
+            }
+        }
+        // 纯文本组件
+        let TextItem = {
+            props: ['data'],
+            render(createElement) {
+                return createElement(
+                    'div',
+                    [
+                        createElement('p', '纯文本组件'),
+                        createElement('p', this.data.text)
+                    ]
+                )
+            }
+        }
+        Vue.component('smaart-item', {
+            // 函数化组件
+            functional: true,
+            render(createElement, context) {
+                function getComponent() {
+                    console.log(context);
+                    let data = context.props.data;
+                    // 判断prop:data的type字段是属于哪种类型的组件
+                    if (data.type === 'img') return ImgItem;
+                    if (data.type === 'video') return VideoItem;
+                    return TextItem;
+                }
+                return createElement(
+                    
+                    getComponent(),
+                    {
+                        props: {
+                            // 把smart-item的prop：data传给上面智能选择的组件
+                            data: context.props.data
+                        }
+                    },
+                    // 显示组件里面的内容，，感觉类似slot。。。
+                    context.children,
+                    // createElement('p',context.children[0].text)
+                )
+            },
+            props:{
+                data:{
+                    type:Object,
+                    required:true
+                }
+            }
+        });
+        var app=new Vue({
+            el:'#app',
+            data:{
+                data:{}
+            },
+            methods: {
+                // 切换不同类型组件的数据
+                change(type){
+                    if(type=='img'){
+                        this.data={
+                            type:'img',
+                            url:'https://avatar.csdn.net/B/9/8/3_cj9551.jpg',
+                        }
+                    }else if(type==='video'){
+                        this.data={
+                            type:'video',
+                            url:'http://vjs.zencdn.net/v/oceans.mp4'
+                        }
+                    }else if(type==='text'){
+                        this.data={
+                            type:'text',
+                            content:'这是一段纯文本'
+                        }
+                    }
+                }
+            },
+            created() {
+                // 初始化时，默认设置图片组件的数据
+                this.change('img');
+            },
+        });
+    </script>
+</body>
+
+</html>

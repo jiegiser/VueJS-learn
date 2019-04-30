@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>JSX</title>
+    <script src="../lib/js/vue.js"></script>
+</head>
+<body>
+    <div id="app">
+
+    </div>
+    <script>
+        var app=new Vue({
+            el:'#app',
+            // 使用createElement，
+            render(createElement) {
+                return createElement('div',{
+                    props:{
+                        text:'some text'
+                    },
+                    attrs:{
+                        id:'myDiv'
+                    },
+                    domProps:{
+                        innerHTML:'content'
+                    },
+                    on:{
+                        change:this.changeHandelr
+                    },
+                    nativeOn:{
+                        click:this.clickHandler
+                    },
+                    class:{
+                        show:true,
+                        on:false
+                    },
+                    style:{
+                        color:'#fff',
+                        background:'#f50'
+                    },
+                    key:'key',
+                    ref:'element',
+                    refInFor:true,
+                    slot:'slot'
+                })
+            },
+            // 上面的例子使用JSX后等同于：如果使用JSX，需要在webpack中进行配置babel-plugin-transform-vue-jsx，
+            // 以及render中的参数h不能省略。否则使用时会触发错误
+            render(h){
+                return (
+                    <div id="myDiv" domPropsInnerHTML="content" onChange={this.changeHandelr} 
+                    nativeOnClick={this.clickHandler} class={{show:true,on:false}} style="{{color:'#fff',background:'#f50'}}"
+                    key="key" ref="element"  refInfor slot="slot"
+                    >
+                    </div>
+                )
+            }
+        })
+    </script>
+</body>
+</html>

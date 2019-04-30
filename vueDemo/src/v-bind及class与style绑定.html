@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>v-bind及class与style绑定</title>
+    <link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="../lib/js/vue.js"></script>
+    <style>
+        .active{
+            width: 202px;
+            height: 202px;
+            background-color: aquamarine
+        }
+        .error{
+            border: 1px solid red
+        }
+        .div2{
+            position: absolute;
+            top: 10px;
+            left: 220px;
+        }
+    </style>
+</head>
+<body>
+    <div id='app'>
+        <!-- 1. 对象语法 -->
+        <!-- 当isActive为true时，div拥有 active类-->
+        <div :class="{'active':isActive}"></div>
+        <br>
+        <!-- 对象中，可以传入多个属性，来动态切换class，：class与普通的class属性都可以存在 -->
+        <div  class="div2" :class="{'active':isActive,'error':isError}"></div>
+        <br>
+        <!-- 当:class的表达式过长或者逻辑复杂时，可以绑定一个计算属性，也可以绑定一个Object类型的数据，或者使用类似计算属性的methods -->
+        <div :class="classes">绑定计算属性</div>
+        <br>
+        <!-- 2. 数组语法 -->
+        <!-- 需要应用多个class，可以使用数组语法，给:class绑定一个数组，应用一个class列表 -->
+        <div :class="[activeCls,errorCls]"></div>
+        <br>
+        <!-- 使用三元表达式根据条件切换class -->
+        <div :class="[isActive?activeCls:'',errorCls]"></div>
+        <!-- 可以在数组语法中使用对象语法 -->
+        <br>
+        <div :class="[{'active':isActive},errorCls]"></div>
+        <br>
+        <!-- 同样类似对象语法，可以使用data、computed、methods三种方法 -->
+        <div :class="classes2">计算属性</div>
+        <!-- 3. 在组件上使用 -->
+        <!-- 组件上使用class或者:class，样式规则会直接应用到这个组件的根元素上 
+        这种用法仅适用于自定义组建的最外层是一个根元素，否则无效,当不满足这种条件或需要给具体的子元素设置类名时，
+        应当使用组件的props；来传递
+        -->
+        <div><my-cpmponent :class="{'active':isActive}"></my-cpmponent></div>
+    </div>
+    <script>
+        Vue.component('my-cpmponent',{
+            template:`<div><p class="article">文本</p></div>`,
+        });
+        var data={
+            isActive:true,
+            isError:true,
+            error:null,
+            activeCls:'active',
+            errorCls:'error',
+            size:'large',
+            disabled:true
+        }
+        // 经常会遇到class与style需要动态绑定，可以使用v-bind来进行绑定
+        var app=new Vue({
+            el:'#app',
+            data,
+            computed: {
+                classes(){
+                    return {
+                        active:this.isActive&&!this.error,
+                        'text-fail':this.error&&this.error.type==='fail'
+                    }
+                },
+                classes2(){
+                    return [
+                        'btn',
+                        {
+                            // 当size不为空，会拼接加上class
+                            ['btn-'+this.size]:this.size!=='',
+                            ['btn-disabled']:this.disabled
+                        }
+                    ]
+                }
+            },
+        });
+    </script>
+</body>
+</html>

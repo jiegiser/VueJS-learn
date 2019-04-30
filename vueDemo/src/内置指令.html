@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>内置指令</title>
+    <link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="../lib/js/vue.js"></script>
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 1. v-clock不需要表达式，他会在Vue实例结束编译时从绑定的HTML元素上移除，经常和CSS的display：none配合使用 -->
+        <!-- v-cloak应用场景就是，一般网页初始化慢Vue.js文件还没加载完成，在页面会直接显示花括号，直到Vue创建实例、编译模板时
+        DOM才会被替换，所以这个过程屏幕是有闪动的，只要加一句CSS就如上面加的，就会解决问题。
+        在一般情况下，v-cloak是一个解决初始化慢导致页面闪动的最佳实践，
+        -->
+        <div v-cloak>
+            {{message}}
+        </div>
+        <!-- 2. v-once不需要表达式的指令，作用是定义它的元素或者组件只渲染一次，包括元素或组件的所有子节点。
+        首次渲染后，不在随数据的变化重新渲染，将被视为静态内容。
+        -->
+        <div v-once>
+            <span>{{message}}</span>
+        </div>
+        <!-- 3. v-if、v-else-if、v-else -->
+        <!-- 如果一次判断的是多个元素，可以在Vue.js内置的<template>元素上使用条件指令，最终渲染的经过不会包含该元素 -->
+        <p v-if="status===1">当status为1时显示该行</p>
+        <p v-else-if="status===2">当status为2时显示该行</p>
+        <p v-else>否则显示该行</p>
+        <!-- 如果一次判断的是多个元素，可以在Vue.js内置的<template>元素上使用条件指令，最终渲染的经过不会包含该元素 -->
+        <template v-if="status===1">
+            <p>这是一段文本</p>
+            <p>这是一段文本</p>
+            <p>这是一段文本</p>
+        </template>
+        <!-- 下面是一个例子，复用已有的元素 -->
+        <template v-if="type==='name'">
+            <label for="">用户名</label>
+            <input placeholder="输入用户名">
+        </template>
+        <template v-else>
+            <label for="">邮箱</label>
+            <input type="text" placeholder="输入邮箱">
+        </template>
+        <button class="btn btn-primary" @click="handleToggleClick">切换输入类型</button>
+        <!-- 也可以使用Vue.js提供的key属性，他可以让你自己决定是否要复用元素，key的值必须是唯一的。例如 
+        给两个input元素都添加key后，就不会复用了，切换类型时键入的内容也会被删除，不过label元素任然是被复用的，因为没有
+        添加key属性
+        -->
+        <template v-if="type==='name'">
+            <label for="">用户名</label>
+            <input placeholder="输入用户名" key="name-input">
+        </template>
+        <template v-else>
+            <label for="">邮箱</label>
+            <input type="text" placeholder="输入邮箱" key="mail-input">
+        </template>
+        <button class="btn btn-primary" @click="handleToggleClick">切换输入类型</button>
+        <!-- 4. v-show 用法与v-if一致，只不过v-show是改变元素的css属性display，当v-show表达式为false时，元数据会隐藏
+        css属性为display为none
+        这里需要注意的是，v-show不能在template上使用
+        -->
+        <div v-show="status===2">
+            <p>当status为1时显示该行</p>
+        </div>
+        <!-- 对于v-if与v-show选择：v-if更适合条件不经常改变的场景，因为它的切换开销相对较大。v-show更适用于平凡切换条件 -->
+        <!-- 5. v-for表达式需要结合in来使用，类似item in items -->
+        <ul>
+            <li v-for="book in books">{{book.name}}</li>
+        </ul>
+        <!-- 列表渲染也支持of来代替in作为分隔符，它更接近Javascript迭代器的语法 -->
+        <ul>
+            <li v-for="(book,index) in books">{{index}}-{{book.name}}</li>
+        </ul>
+        <!-- v-for 也可以在内置标签template上，将多个元素进行渲染-->
+        <ul>
+            <template v-for="book in books">
+                <li>书名：{{book.name}}</li>
+                <li>作者：{{book.author}}</li>
+            </template>
+        </ul>
+        <!-- 除了数组外，对象的属性也是可以遍历的 -->
+        <span v-for="value in user">{{value}}</span>
+        <!-- 遍历对象属性时，有两个可选参数，分别是键名和索引 -->
+        <ul>
+            <li v-for="(value,key,index) in user">
+                {{index}}-{{key}}:{{value}}
+            </li>
+        </ul>
+        <!-- v-for还可以迭代整数 -->
+        <span v-for="n in 10">{{n}}</span>
+        <!-- 6. 数组更新 
+        Vue包含一组观察数组变异的方法，使用它们改变数组也会触发视图更新
+        比如数组的方法：push、pop、shift、unshift、splice、sort、reverse等等
+        有些方法不会改变原数组，比如filter、concat、slice等，它们返回的是一个新数组，在使用这些非变异方法时，
+        可以使用新数组来提花原数组，比如下面的例子
+        -->
+        <hr>
+        <ul>
+            <template v-for="book in books">
+                <li>书名：{{book.name}}</li>
+                <li>作者：{{book.author}}</li>
+            </template>
+        </ul>
+        <!-- vue在检测到数组变化时，并不是直接重新渲染整个列表，，而是最大化地复用DOM元素。替换的数组中，含有相同元素的项
+        不会被重新渲染，因此可以大胆地用系数组来替换旧数组，不用担心性能的问题；
+        需要注意的是：以下变动的数组中，Vue是不能检测到的，也不会触发视图更新；
+        1. 通过索引直接设置项，比如app.books[3]={...}
+        2. 修改数组的长度，比如app.books.length=1
+        解决第一个问题可以用两种方法实现同样的效果，第一种是使用Vue内置的set方法。
+        Vue.set(app.books,3,{
+            name:'《css揭秘》',
+            author:'lea'
+        });
+        如果是在webpack中使用组件化的方式，默认是没有导入Vue的，这是可以使用$set,例如：
+        this.$set(app.books,3,{
+            name:'《css揭秘》',
+            author:'lea'
+        })
+        这里的this指向的就是当前组件实例，也就是app，在非webpack模式下也可以使用$set方法，例如app.$set(...)
+        另一种方法：
+        app.books.splice(3,1,{
+            name:'《css揭秘》',
+            author:'lea'
+        });
+        第二个问题，也可以直接用splice来解决：
+        app.books.aplice(1);
+     -->
+
+        <!-- 7. 过滤与排序 -->
+        <!-- 当不想改变原数组，想通过一个数组的副本来做过滤或排序的显示时，可以使用计算属性来返回过滤或排序后的数组 -->
+        <!-- 计算属性filterBooks依赖books，但是不会修改books。实现排序也是类似的，比如在此基础上新家一个计算属性sortedBooks
+        
+        -->
+        <hr>
+        <ul>
+            <template v-for="book in filterBooks">
+                <li>书名：{{book.name}}</li>
+                <li>作者：{{book.author}}</li>
+            </template>
+        </ul>
+        <hr>
+        <ul>
+            <template v-for="book in sortedBooks">
+                <li>书名：{{book.name}}</li>
+                <li>作者：{{book.author}}</li>
+            </template>
+
+        </ul>
+    </div>
+    <script>
+        var data = {
+            message: '一段文本',
+            status: 1,
+            type: 'name',
+            books: [
+                { name: '《vue实战》', author: 'jie' },
+                { name: '《Javascript语言精髓》', author: 'goug' },
+                { name: '《Javascript高级程序设计》', author: 'Nicholas' },
+            ],
+            user: {
+                name: 'jiegiser',
+                gender: '男',
+                age: 18
+            }
+        };
+        var app = new Vue({
+            el: "#app",
+            data,
+            methods: {
+                handleToggleClick() {
+                    this.type = this.type === 'name' ? 'mail' : 'name';
+                }
+            },
+            computed: {
+                filterBooks() {
+                    return this.books.filter((book) => {
+                        return book.name.match(/Javascript/);
+                    })
+                },
+                sortedBooks() {
+                    return this.books.sort((a, b) => {
+                        return a.name.length < b.name.length;
+                    });
+                }
+            },
+        });
+        // app.books.push({
+        //     name: 'css揭秘',
+        //     author: 'lea verou'
+        // });
+        // app.books = app.books.filter(function (item) {
+        //     return item.name.match(/Javascript/);
+        // });
+        // Vue.set(app.books, 3, {
+        //     name: '《css揭秘》',
+        //     author: 'lea'
+        // });
+        // app.books.splice(3, 1, {
+        //     name: '《css揭秘》',
+        //     author: 'lea'
+        // });
+        // app.books.splice(1);
+    </script>
+</body>
+
+</html>

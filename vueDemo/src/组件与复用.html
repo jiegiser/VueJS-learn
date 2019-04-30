@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>组件详解</title>
+    <link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="../lib/js/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <my-component></my-component>
+        <my-components></my-components>
+        <my-componentss></my-componentss>
+        <my-componentss></my-componentss>
+        <my-componentss></my-componentss>
+        <!-- 这里需要注意的是：Vue组件的模板在某些情况下会受到html的显示，比如table内规定只允许是tr、td、th等这些表格元素
+        ，所以在table内直接使用组件是无效的，这中情况下，可以使用特殊的is属性来挂载组件，如下
+
+        常见的限制元素还有ul、ol、select；
+        不过如果使用的是字符串模板，是不受限制的
+        -->
+        
+        <table border="solid">
+            <tbody is="my-component"></tbody>
+        </table>
+
+        <Card style="width:350px">
+            <p slot="title">与xxx聊天中</p>
+            <a href="#" slot="extra">
+                <Icon type="android-close" size="18"></Icon>
+            </a>
+            <div style="height:100px">
+            </div>
+            <div>
+                <Row :gutter="16">
+                    <i-col apan="17">
+                        <i-input v-model="value" placeholder="请输入...">
+                        </i-input>
+                    </i-col>
+                    <i-col span="4">
+                        <i-button type="primary" icon="paper-airplane">发送</i-button>
+                    </i-col>
+                </Row>
+            </div>
+        </Card>
+    </div>
+    <script>
+        // 组件需要注册之后，才可以使用。注册有全局注册和局部注册两种方式，全局注册后，任何vue实例都可以使用，
+        // 这里需要注意的是，要在父实例中使用组件，必须要在实例创建前注册，之后就可以用我们注册的组件了
+        
+        /*
+        除了template属性外，组件中还可以像Vue实例那样使用其他的选项，比如data、computed、methods等，但是在使用data时，
+        和实例稍有区别，data必须是函数，然后将数据return出去，
+        */
+        
+        // 全局注册
+        Vue.component('my-component', {
+            //选项
+            // template的DOM结果必须要被一个元素包含，如果直接写成“这是一个组件”，不带div包裹，是无法渲染的
+            template: `<div>{{message}}</div>`,
+            data:()=>{
+                return {
+                    message:'这是一个组件'
+                }
+            }
+        });
+        // 局部注册
+        var Child = {
+            template: `<div>局部注册的组件</div>`,
+        };
+        var data = {
+
+        };
+        // javascript对象是引用关系，所以如果return出的对象引用了外部的一个对象，那这个对象就是共享的，任何一方修改都会同步
+        // 如下面的例子：
+        var datas={
+            counter:0
+        }
+        Vue.component('my-componentss',{
+            template:`<button @click="counter++">{{counter}}</button>`,
+            data:function (){
+                return {
+                    counter:0
+                }
+            }
+        });
+        var app = new Vue({
+            el: '#app',
+            data,
+            // 在vue实例中，使用components选项可以局部注册组件，注册后的组件只有在该实例作用域下有效。组件中也可以使用
+            // components选项来注册组件，使组件可以嵌套。
+            // 局部注册
+            components: {
+                'my-components': Child
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        body {
+            position: absolute;
+            background: #ccc;
+        }
+
+        .div2 {
+            position: relative;
+            width: 1.172058134083451rem;
+            height: 50px;
+            background: #fff;
+        }
+    </style>
+    <script type="text/javascript" charset="utf-8" src="http://apps.bdimg.com/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script>
+        (function ($) {
+            $.fn.extend({
+                AutoSize: function () {
+                    var element = $(this);
+                    auto();
+                    function auto() {
+                        var width = $(window).width(),
+                            height = $(window).height();
+                        $("html").css("font-size", width / 15);
+                        $(element).width(width).height(height);
+                    };
+                    $(window).resize(auto);
+                }
+            });
+        })(jQuery);
+    </script>
+
+    <script>
+        $(function () {
+            $("body").AutoSize();
+        })
+    </script>
+
+    <script>
+        $(function () {
+            var isdrag = false;
+            var NowLeft, disX;
+            var NowTop, disY;
+
+            var oDiv2 = document.getElementById("div2");
+
+            oDiv2.addEventListener('touchstart', thismousedown);
+            oDiv2.addEventListener('touchend', thismouseup);
+            oDiv2.addEventListener('touchmove', thismousemove);
+
+            function thismousedown(e) {
+                isdrag = true;
+                NowLeft = parseInt(oDiv2.style.left + 0);
+                NowTop = parseInt(oDiv2.style.top + 0);
+                disX = e.touches[0].pageX;
+                disY = e.touches[0].pageY;
+                return false;
+            }
+
+            function thismousemove(e) {
+                if (isdrag) {
+
+                    oDiv2.style.left = NowLeft + e.touches[0].pageX - disX + 'px';
+                    oDiv2.style.top = NowTop + e.touches[0].pageY - disY + 'px';
+
+                    return false;
+                }
+            }
+
+            function thismouseup() {
+                isdrag = false;
+            };
+        }); 
+    </script>
+</head>
+
+<body>
+    <div id="div2" class="div2"></div>
+</body>
+
+</html>

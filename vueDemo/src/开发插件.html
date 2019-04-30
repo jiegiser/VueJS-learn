@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>插件</title>
+    <script src="../lib/js/vue.js"></script>
+</head>
+<body>
+    <div id="app">
+
+    </div>
+    <script>
+        // 绝大多数开发插件主要是通过npm发布给被人使用，在自己的项目中可以直接在入口调用以上的方法，不需要多一步注册和使用的
+        // 步骤
+        // 注册插件需要一个公开的方法install，第一个参数是Vue构造器，第二个参数是一个可选的选项对象。
+        MyPlugin.install(Vue,options){
+            // 全局注册组件（指令等功能资源类似）
+            Vue.component('component-name',{
+                // 组件内容
+            });
+            // 添加实例方法
+            Vue.prototype.$Notice(){
+                // 逻辑。。
+            }
+            // 添加全局方法或属性
+            Vue.globalMethod(){
+                // 逻辑
+            }
+            // 添加全局混合
+            Vue.mixin({
+                mounted() {
+                    // 逻辑
+                },
+            })
+        }
+        // 通过Vue.use()来使用插件
+        Vue.use(MyPlugin);
+        // 或者
+        Vue.use(MyPlugin,{
+            // 参数
+        })
+        var app=new Vue({
+            el:'#app',
+        })
+    </script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>使用props传递数据</title>
+    <link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="../lib/js/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 1. 通常父组件的模板中包含子组件，父组件要正向地向子组件传递参数或者数据，子组件接收到后根据参数的不同来渲染不同的
+        内容或执行操作，这个正向传递数据的过程就是通过props来是实现；
+        在组件中，使用选项props来声明需要从父级接收的数据，props的值可以是两种，一种是字符串数组，一种是对象；
+        对于字符串数组：比如我们构造一个数组，接收一个来自父级的数据message，便把他在组件模板中渲染，代码如下：
+        -->
+        <my-component message="来自父组件的数据"></my-component>
+        <my-con warning-text="提示信息"></my-con>
+
+        <!-- 有时候，传递的数据并不是直接写死的，而是来自父级的动态数据，这是可以使用指令v-bind来动态绑定props的值，
+        当父组件的数据变化时，也会传递给子组件。 -->
+        <input type="text" v-model="parentMessage">
+        <my-parcom :message="parentMessage"></my-parcom>
+
+        <!-- 如果要直接传递数字、布尔值、数组、对象，而且不使用v-bind，传递的仅仅是字符串，可以用下面： 
+        同一个组件，使用了两次，区别仅仅是第二个使用的是v-bind，渲染后的结果，第一个是7，第二个才是数组的长度3
+        -->
+        <my-comone message="[1,2,3]"></my-comone>
+        <my-comone :message="[1,2,3]"></my-comone>
+
+        <!-- 2.单向数据流  
+        业务中，经常会遇到两种需要改变prop的情况，一种是父组件传递初始值进来，子组件将它作为初始值保存，在自己的作用域下可以
+        随意使用和修改，这中情况可以在组件data内在声明一个数据，引用父组件的prop：如下：
+        -->
+        <my-coms :init-count="1"></my-coms>
+        <!-- 另一种就是prop作为需要被转变的原始值传入，这种情况用计算属性就可以了 -->
+        <my-comst :width="100"></my-comst>
+
+        <!-- 3. 数据验证 -->
+        <!-- 上面的props选项的值全部是一个数组，props除了为数组外，还可以是对象，当props需要验证时，就需要对象写法
+        一般当你的组件需要提供给别人使用时，推荐都进行数据验证，比如某个数据必须是数字类型，如果传入字符串，就会
+        在控制台弹出警告。
+        -->
+        <my-yanzheng></my-yanzheng>
+    </div>
+    <script>
+        Vue.component('my-component',{
+            /*
+            props中声明的数据与组件data函数return的数据主要区别就是props的来自父级，而data中的是组件自己的数据，作用域是组件本身
+            这两种数据可以在模板template及计算属性cimputed和方法methods中使用。上面的例子message就是通过props从父级传递过来的，
+            在组件的自定义标签上直接写该props的名称，如果要传递过个数据，在props数组中添加即可。
+            由于HTML、特性不区分大小写，当使用DOM模板时，驼峰命名的props名称要转为短横分隔命名，比如下面的：
+            */
+            props:['message'],
+            template:`<div>{{message}}</div>`
+        });
+        Vue.component('my-con',{
+            props:['warningText'],
+            template:`<div>{{warningText}}</div>`
+        });
+        Vue.component('my-parcom',{
+            props:['message'],
+            template:`<div>{{message}}</div>`
+        });
+        Vue.component('my-comone',{
+            props:['message'],
+            template:`<div>{{message.length}}</div>`
+        });
+        /*
+        业务中，经常会遇到两种需要改变prop的情况，一种是父组件传递初始值进来，子组件将它作为初始值保存，在自己的作用域下可以
+        随意使用和修改，这中情况可以在组件data内在声明一个数据，引用父组件的prop：如下：
+        */
+        Vue.component('my-coms',{
+            props:['initCount'],
+            template:`<div>{{count}}</div>`,
+            data:function(){
+                return {
+                    count:this.initCount
+                }
+            }
+        });
+        // 另一种就是prop作为需要被转变的原始值传入，这种情况用计算属性就可以了
+        // 这里需要注意的是，在Javascript中对象和数组是引用类型，指向同一个内存空间，所以props是对象和数组时，在组件内改变
+        // 是会影响父组件的。
+        Vue.component('my-comst',{
+            props:['width'],
+            template:`<div :style="style">组件内容</div>`,
+            computed: {
+                style(){
+                    return {
+                        width:this.width+'px',
+                    }
+                }
+            },
+        });
+
+
+        Vue.component('my-yanzheng',{
+            /*
+            验证的type类型可以是：string、number、boolean、object、array、function，type也可以是一个自定义构造器，使用instanceof
+            检验。当prop验证失败时，在开发版本下会在控制台抛出一条警告
+            */
+            props:{
+                // 必须是数字类型
+                propA:Number,
+                // 必须是字符串或数字类型
+                propB:[String,Number],
+                // 布尔值，如果没有定义，默认值就是true
+                propC:{
+                    type:Boolean,
+                    default:true
+                },
+                // 数字，而且是必传
+                propD:{
+                    type:Number,
+                    required:true
+                },
+                // 如果是数组或对象，默认值必须是一个函数来返回
+                propE:{
+                    type:Array,
+                    default:function(){
+                        return [];
+                    }
+                },
+                // 自定义一个验证函数
+                propF:{
+                    vaildator:(value)=>{
+                        return value>10;
+                    }
+                }
+            },
+            template:`<div>{{propA}}-{{propD}}</div>`,
+        });
+        var data = {
+            value:'',
+            parentMessage:''
+        };
+        var app = new Vue({
+            el: "#app",
+            data,
+        });
+    </script>
+</body>
+
+</html>

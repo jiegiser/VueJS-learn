@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>表单与v-model</title>
+    <link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="../lib/js/vue.js"></script>
+    <style>
+        #app {
+            margin: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <!--1.  表单绑定 -->
+        <span>{{message}}</span>
+        <input type="text" v-model="message">
+        <br>
+        <!-- 2. 文本域 -->
+        <textarea cols="30" rows="10" v-model="text" placeholder="输入...">插入的值</textarea>
+        <p>输入的内容是：</p>
+        <p style="white-space:pre">{{text}}</p>
+        <br>
+        <!-- v-model知识一个特殊的语法糖，不过他会在不同的表单上智能处理 ,
+        v-model 在输入中文的时候，一般在没有选定词组前，也就是拼音阶段，Vue不会更新数据的，当敲下汉字时才会触发更新，如果
+        希望总是实时更新，可以使用@input来代替v-model。
+        -->
+        <input type="text" @input="handleInput" placeholder="输入...">
+        <p>输入的内容是：{{message}}</p>
+        <!-- 3. 单选按钮 -->
+        <!-- 单选按钮单独使用时,不需要v-model,直接使用v-bind绑定一个布尔类型的值,为真时选中,为假时不选中 -->
+        <input type="radio" :checked="piaced"><label for="">单选按钮</label>
+        <br>
+        <!-- 如果是组合使用来是实现互斥选择的效果，就需要v-model配合value来使用 -->
+        <input type="radio" v-model="piaced" value="html" id="html">
+        <label for="html">HTML</label>
+        <br>
+        <input type="radio" v-model="piaced" value="js" id="js">
+        <label for="js">js</label>
+        <br>
+        <input type="radio" v-model="piaced" value="css" id="css">
+        <label for="css">css</label>
+        <br>
+        <p>选择的项是：{{piaced}}</p>
+        <!-- 4. 复选框 -->
+        <!-- 也分单独使用和组合使用，不过用法稍微与单选不同，单独使用时，也是用v-model绑定一个布尔值 -->
+        <input type="checkbox" v-model="checked" id="checked">
+        <label for="checked">选择状态：{{checked}}</label>
+        <br>
+        <!-- 在组合使用时，也是v-model与value一起，多个勾选框都绑定到同一个数组类型的数据，value的值在数组当中
+        就会选中这一项，这个过程是双项的，在勾选时，value的值也会自动push到这个数组中，
+        -->
+        <input type="checkbox" v-model="checkeds" value="html" id="html">
+        <label for="html">HTML</label>
+        <br>
+        <input type="checkbox" v-model="checkeds" value="js" id="js">
+        <label for="html">JavaScript</label>
+        <br>
+        <input type="checkbox" v-model="checkeds" value="css" id="css">
+        <label for="html">css</label>
+        <br>
+        <p>选择的项是：{{checkeds}}</p>
+        <!--5. 选择列表 -->
+        <!-- 同样分单选和多选两种方式 -->
+        <select v-model="selected">
+            <option>html</option>
+            <option value="js">JavaScript</option>
+            <option>css</option>
+        </select>
+        <p>选择的项是：{{selected}}</p>
+        <!-- option是备选项，如果含有value属性，v-model就会有限匹配value的值，如果没有，就会直接匹配option的值，
+        给selected添加属性multiple就可以多选了，此时v-model绑定的是一个数组，与复选框类似
+        -->
+        <select v-model="selecteds" multiple>
+            <option>html</option>
+            <option value="js">JavaScript</option>
+            <option>css</option>
+        </select>
+        <p>选择的项是：{{selecteds}}</p>
+        <!-- 在业务中，option大多数是通过v-for动态加载 ，value与text用v-bind来动态输出的-->
+        <select v-model="selecteds">
+            <option v-for="option in options" :value="option.value">{{option.text}}</option>
+        </select>
+        <p>选择的项是：{{selecteds}}</p>
+        <!-- 6. 绑定值 -->
+        <!-- 绑定动态的数据
+        在选中的时候，app.picked===app.value,值都是123
+        -->
+        <input type="radio" v-model="pickeds" :value="value">
+        <label for="">单选按钮</label>
+        <p>{{pickeds}}</p>
+        <p>{{value}}</p>
+
+        <!-- 7. 复选框 -->
+        <!-- 这里的 toggle换成其他的字符也是可以的，比如空字符，，不知道他在这里起到什么作用，应该是用来获取选中的值
+        主要的根据后面的两个参数，true-value与fals-value进行选择；勾选时app.toggle===app.value1,未勾选时，app.toggle
+        ===app.value2;但是初始状态，app.toggle就是我们设置的值，，感觉。有问题，这里
+        -->
+        <input type="checkbox" v-model="toggle" :true-value="value1" :false-value="value2">
+        <label for="">复选框</label>
+        <p>{{toggle}}</p>
+        <p>{{value1}}</p>
+        <p>{{value2}}</p>
+        
+        <!-- 8. 选择列表 -->
+        <select v-model="selectedss">
+            <option :value="{number:123}">123</option>
+            {{selectedss.number}}
+        </select>
+    </div>
+    <script>
+        var data = {
+            message: '..',
+            text: '',
+            picked: true,
+            piaced: 'js',
+            checked: true,
+            checkeds: [],
+            selected: '',
+            selecteds: [],
+            options:[
+                {
+                    text:'HTML',
+                    value:'html'
+                },
+                {
+                    text:'JavaScript',
+                    value:'js'
+                },
+                {
+                    text:'css',
+                    value:'css'
+                }
+            ],
+            pickeds:false,
+            value:123,
+            toggle:false,
+            value1:'a',
+            value2:'b',
+            selectedss:''
+        };
+        var app = new Vue({
+            el: '#app',
+            data,
+            methods: {
+                handleInput(e) {
+                    console.log(e);
+                    this.message = e.target.value;
+                }
+            },
+        });
+    </script>
+</body>
+
+</html>

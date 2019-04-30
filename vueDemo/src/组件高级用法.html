@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>组件高级用法</title>
+    <link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="../lib/js/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 1. 递归组件
+        组件在他的模板内可以递归地调用自己，只要给组件设置name的选项就可以：
+        这里需要注意的是，必须给一个条件来限制递归数量，否则会抛出异常：max stack size exceeded
+        -->
+        <child-component :count='1'></child-component>
+
+        <!-- 2. 内联模板
+        组件的模板一般都是在template选项内定义的，Vue提供了一个内联模板的功能，在使用组件时，给组件标签使用inline-template
+        特性，组件就会把它的内容当做模板，而不是把它当内容分发，这让模板更灵活。
+        -->
+        <inline-templates inline-template>
+            <div>
+                <h2>在父组件中定义子组件的模板</h2>
+                <p>{{message}}</p>
+                <p>{{msg}}</p>
+            </div>
+        </inline-templates>
+
+        <!-- 3. 动态组件
+        可以使用vue提供的特殊的元素component用来动态挂载不同的组件，使用is特性来选择挂载的组件。
+        -->
+        <component :is="currentView"></component>
+        <button @click="handleChangeView('A')">切换到A</button>
+        <button @click="handleChangeView('B')">切换到B</button>
+        <button @click="handleChangeView('C')">切换到C</button>
+        <!-- 也可以直接绑定在组件对象上 -->
+        <component :is="currentViews"></component>
+        
+        <!-- 4. 异步组件
+        Vue允许将组件定义为一个工厂函数，动态的解析组件，VUe只在组件需要渲染时触发工厂函数，并且吧结果缓存起来，用于后面的
+        再次渲染。
+        -->
+        <sync-component></sync-component>
+
+
+        <!-- 5. 其他 
+        $nextTick就是用来知道什么时候DOM更新完成的
+        -->
+        <div id="div" v-if="showDiv">这是一段文本</div>
+        <button @click="getText">获取div内容</button>
+
+        <!-- X-Templates 
+        在script中定义模板，可以指定给一个id，将这个id赋给template
+        -->
+        <myx-component></myx-component>
+        <script type="text/x-template" id="my-component">
+            <div>这是组件的内容</div>
+        </script>
+
+        <!-- 手动挂载实例 
+        我们现在创建的实例都是通过new Vue的形式创建出来的，在一些非常特殊的情况下，我们需要动态的去创建Vue实例，Vue提供了
+        Vue.extend和$mount两个方法来手动挂载一个实例。
+        Vue.extend是基础Vue构造器，创建一个子类，参数是一个包含组件选项的对象。
+        如果vue实例在实例化时没有收到el选项，他就处于未挂载状态，没有关联的DOM元素。可以使用$mount手动挂载一个未挂载的实例，
+        这个方法返回实例本身，因而可以链式调用其他实例方法。
+        -->
+
+        <div id="mount-div">
+
+        </div>
+    </div>
+    <script>
+        Vue.component('child-component', {
+            name: 'child-component',
+            props: {
+                count: {
+                    type: Number,
+                    default: 1
+                }
+            },
+            template: `<div class="child">
+                        <p>组件</p>
+                        <child-component :count="count+1" v-if="count<3">
+                        </child-component>
+                     </div>`,
+        });
+        Vue.component('inline-templates', {
+            data() {
+                return {
+                    msg: '在子组件声明的数据'
+                }
+            }
+        });
+
+        // 异步组件
+        /*
+        工厂函数接受一个reslove回调，在收到服务器下载的组件定义时调用。也可以调用reject(reason)指示加载失败。这里setTimeout
+        只是为了演示异步，可以将组件配置写成一个对象配置，通过ajax来请求，然后调用reslove传入配置选项。
+        */
+        Vue.component('sync-component',(resolve,reject)=>{
+            window.setTimeout(function(){
+                resolve({
+                    template:`<div>我是异步渲染的</div>`
+                });
+            },2000);
+        });
+
+        // x-template
+        Vue.component('myx-component',{
+            template:'#my-component'
+        })
+        var Home={
+            template:`<p>welcome</p>`
+        };
+        var app = new Vue({
+            el: '#app',
+            data: {
+                message: "在父组件声明的数据",
+                currentView: 'comA',
+                currentViews:Home,
+                showDiv:false
+            },
+            components: {
+                comA: {
+                    template: `<div>组件A</div>`
+                },
+                comB: {
+                    template: `<div>组件B</div>`
+                },
+                comC: {
+                    template: `<div>组件C</div>`
+                },
+            },
+            methods: {
+                handleChangeView(component) {
+                    this.currentView = `com${component}`;
+                },
+                getText(){
+                    this.showDiv=true;
+                    // 下面的这种会报错，因为vue异步更新dom的原理。
+                    // let text=document.getElementById('div').innerHTML;
+                    /*
+                    $nextTick就是用来知道什么时候DOM更新完成的。
+                    */
+                    this.$nextTick(function(){
+                        let text=document.getElementById('div').innerHTML;
+                        console.log(text);
+                    });
+                   
+                }
+            },
+        });
+
+        // 手动挂载组件
+        var MyComponent=Vue.extend({
+            template:`<div>Hello :{{name}}</div>`,
+            data(){
+                return {
+                    name:'Jiegiser'
+                }
+            }
+        });
+        // new MyComponent().$mount('#mount-div');
+        // 也可以这样写
+        // new MyComponent({
+        //     el:'#mount-div'
+        // });
+        // 或者，在文档之外渲染并且随后挂载
+        var component=new MyComponent().$mount();
+        document.getElementById('mount-div').appendChild(component.$el);
+    </script>
+</body>
+
+</html>

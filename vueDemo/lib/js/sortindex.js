@@ -1,0 +1,63 @@
+var app=new Vue({
+    el:'#app',
+    // columns的每一项是一个对象，其中title和key字段是必填的，用来标识这个列的表头标题，key是对应data中列内容的字段名
+    // sorttable是选填字段，如果值为true，说明该列需要排序，
+    data:{
+        columns:[
+            {
+                title:'姓名',
+                key:'name'
+            },
+            {
+                title:'年龄',
+                key:'age',
+                sortable:true
+            },
+            {
+                title:'出生日期',
+                key:'birthday',
+                sortable:true
+            },
+            {
+                title:'地址',
+                key:'address'
+            }
+        ],
+        data:[
+            {
+                name:'王小明',
+                age:18,
+                birthday:'1999-02-21',
+                address:'武汉中地'
+            },
+            {
+                name:'张小刚',
+                age:19,
+                birthday:'1997-02-21',
+                address:'武汉中地'
+            },
+            {
+                name:'立夏后',
+                age:20,
+                birthday:'1987-02-21',
+                address:'武汉中地'
+            },
+            {
+                name:'刘晓彤',
+                age:21,
+                birthday:'1991-02-21',
+                address:'武汉中地'
+            }
+        ]
+    },
+    methods: {
+        handleAddData(){
+            this.data.push({
+                name:'jiegiser',
+                age:18,
+                birthday:'1992-05-01',
+                address:'武汉市红杉树'
+            });
+        }
+    },
+});

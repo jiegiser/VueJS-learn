@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>开发一个数字输入框组件</title>
+    <link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <input-number v-model="value" :max="10" :min="0"></input-number>
+    </div>
+    <script src="../lib/js/vue.js"></script>
+    <!-- 数字输入框组件 -->
+    <script src="../lib/js/input-number.js"></script>
+    <!-- 根实例 -->
+    <script src="../lib/js/input.js"></script>
+</body>
+</html>
