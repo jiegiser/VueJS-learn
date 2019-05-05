@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>使用animate</title>
+    <link rel="stylesheet" href="../css/animate.css">
+    <script src="../lib/js/vue.js"></script>
+    <style>
+        /* 定义了一个动画效果 */
+        /* @keyframes bounce-in{
+            0%{
+                transform: scale(0);
+            }
+            50%{
+                transform: scale(1.5);
+            }
+            100%{
+                transform: scale(1);
+            }
+        } */
+        /* .fade-enter{
+            opacity: 0;
+        } */
+        /* .fade-enter-active{
+            transform-origin: left center;
+            animation: bounce-in 1s;
+        } */
+        /* .fade-enter-to{
+            color:red;
+        } */
+        /* .fade-leave-to{
+            opacity: 0;
+        } */
+        /* .fade-leave-active{
+            transform-origin: left center;
+            animation: bounce-in 1s reverse;
+        }
+        .active{
+            transform-origin: left center;
+            animation: bounce-in 1s;
+        }
+        .leave{
+            transform-origin: left center;
+            animation: bounce-in 1s reverse;
+        } */
+
+        /* 过渡动画 */
+        .fade-enter,.fade-leave-to{
+            opacity: 0;
+        }
+        .fade-enter-active,.fade-leave-active {
+            transition: opacity 3s;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 说明包裹的标签有一个动画的效果,他会给里面包裹的元素添加多个类名fade-enter、fade-enter-active、fade-enter-to
+        前缀为fade是因为我们添加的name为fade，vue默认为v-enter、v-enter-active等等。div标签外只要使用transition包裹，div不管
+        使用v-show还是v-if过渡动画都是可以显示的。
+        -->
+        <!-- 如果我们需要自定义类名，直接在transform标签上添加 enter-active-class="active" leave-active-class="leave"
+        对应的active以及leave是自定义的类名
+        -->
+        <!-- <transition name="fade" enter-active-class="active" leave-active-class="leave">
+            <div v-if="show">hello world</div>
+        </transition> -->
+
+        <!-- 使用animate.css 
+        为了让div能在初次进去页面的时候有动画，添加一个自定义属性appear-active-class,还需要加一个appear，意思就是让组件第一次
+        显示的时候也有一个动画效果，就是appear-active-class
+        -->
+        <!-- 不仅有animate的这种@keyframes动画还有 transition的过渡动画;如果我们的动画既有@keyframes动画又有过渡动画，
+        但是他们的时间不一致，可以使用type属性，让我们自定义选择是使用哪一个动画的时长来显示动画type="transition"。也可以自定义动画时长
+        :duraction="10000",也可以进行复杂的设置，比如设置出厂动画为10s，入厂动画为5s，:duration="{enter:5000,leave:10000}"
+        -->
+        <transition name="fade" 
+            :duration="1000"
+            appear 
+            enter-active-class="animated swing fade-enter-active"
+            leave-active-class="animated shake fade-leave-active" 
+            appear-active-class="animated swing">
+            <div v-if="show">hello world</div>
+        </transition>
+        <button @click="handleClick">切换</button>
+    </div>
+    <script>
+        var data = {
+            show: true
+        };
+        var app = new Vue({
+            el: '#app',
+            data,
+            methods: {
+                handleClick() {
+                    this.show = !this.show;
+                }
+            },
+        });
+    </script>
+</body>
+
+</html>

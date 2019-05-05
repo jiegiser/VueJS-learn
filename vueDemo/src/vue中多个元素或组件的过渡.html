@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>使用animate</title>
+    <link rel="stylesheet" href="../css/animate.css">
+    <script src="../lib/js/vue.js"></script>
+    <script src="../lib/js/Velocity.js"></script>
+    <style>
+        /* 过渡动画 */
+        .fade-enter,.fade-leave-to{
+            opacity: 0;
+        }
+        .fade-enter-active,.fade-leave-active {
+            transition: opacity 1s;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <!-- mode设置多个属性切换的效果 in-out为先显示的元素先进入，要隐藏的元素在移除。out-in为隐藏的元素先隐藏，然后要显示的
+        元素再显示
+        -->
+        <transition name="fade" mode="out-in">
+            <!-- <child v-if="show"></child>
+            <child-one v-else></child-one> -->
+            <component :is="type"></component>
+
+
+            <!-- dom复用导致动画不会出现，需要加一个key值 -->
+            <!-- <div v-if="show" key="hello">hello world</div>
+            <div v-else key="bye">Bye world</div> -->
+        </transition>
+        <button @click="handleClick">切换</button>
+        <button @click="handleClickCom">切换组件</button>
+        <!-- 多个组件的动画过渡效果 -->
+    </div>
+    <script>
+        Vue.component('child',{
+            template:`<div>child</div>`
+        });
+        Vue.component('child-one',{
+            template:`<div>child-one</div>`
+        });
+        var data = {
+            show: true,
+            type:'child'
+        };
+        var app = new Vue({
+            el: '#app',
+            data,
+            methods: {
+                handleClick() {
+                    this.show = !this.show;
+                },
+                // el就会动画包裹的标签
+                handleBeforeEnter(el){
+                    // el.style.color="red";
+                    el.style.opacity=0;
+                },
+                // 第一个参数还是动画包裹的元素，第二个参数是一个回调函数
+                handleEnter(el,done){
+                    // setTimeout(()=>{
+                    //     // 开始执行动画，2s后面常绿色
+                    //     el.style.color="green";
+                    // },2000);
+                    // 调用done表示动画执行完成，这时候会触发alter-enter事件
+                    // 4s之后执行动画
+                    // setTimeout(() => {
+                    //     done();
+                    // }, 4000);
+
+                    // 将透明调用从0变成1，动画持续的时长为1s,complete属性是当动画执行完成，就调用done函数
+                    Velocity(el,{opacity:1},{duration:1000,complete:done});
+
+                },
+                handleAfterEnter(el){
+                    // el.style.color="#000"
+                },
+                handleClickCom(){
+                    this.type=this.type==='child'? 'child-one' :'child'
+                }
+            },
+        });
+    </script>
+</body>
+
+</html>

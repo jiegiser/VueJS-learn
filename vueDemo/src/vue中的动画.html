@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>绑定内联样式</title>
+    <link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="../lib/js/vue.js"></script>
+    <style>
+        .fade-enter{
+            opacity: 0;
+        }
+        .fade-enter-active{
+            transition: opacity 3s;
+        }
+        .fade-enter-to{
+            color:red;
+        }
+        .fade-leave-to{
+            opacity: 0;
+        }
+        .fade-leave-active{
+            transition: opacity 3s;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 说明包裹的标签有一个动画的效果,他会给里面包裹的元素添加三个类名fade-enter、fade-enter-active、fade-enter-to
+        前缀为fade是因为我们添加的name为fade，vue默认为v-enter、v-enter-active等等。div标签外只要使用transition包裹，div不管
+        使用v-show还是v-if过渡动画都是可以显示的。
+        -->
+        <transition name="fade">
+            <div v-if="show">hello world</div>
+        </transition>
+        <button @click="handleClick">切换</button>
+    </div>
+    <script>
+        var data = {
+            show: true
+        };
+        var app = new Vue({
+            el: '#app',
+            data,
+            methods: {
+                handleClick() {
+                    this.show = !this.show;
+                }
+            },
+        });
+    </script>
+</body>
+
+</html>

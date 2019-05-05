@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../lib/js/vue.js"></script>
+    <style>
+        .v-enter,.v-leave-to{
+            opacity: 0;
+        }
+        .v-enter-active,.v-leave-active{
+            transition: opacity 1s;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <!-- <transition>
+            <div v-show="show">hello world</div>
+        </transition> -->
+
+        <!-- 使用封装的组件 -->
+        <fade :show="show">
+                <div >hello world</div>
+        </fade>
+        <button @click="handleBtnClick">add</button>
+    </div>
+    <script>
+        // 这里需要使用v-if才能实现动画的效果
+        Vue.component('fade',{
+            props:['show'],
+            template:`
+            <transition @before-enter="handleBeforeEnter" @enter="handleEnter">
+                <slot v-if="show"></slot>
+            </transition>
+            `,
+            methods:{
+                handleBeforeEnter(el){
+                    el.style.color="red";
+                },
+                handleEnter(el,done){
+                    setTimeout(() => {
+                      el.style.color="green";
+                      done();  
+                    }, 2000);
+                }
+            }
+        })
+        var app = new Vue({
+            el: '#app',
+            data: {
+                show: true
+            },
+            methods: {
+                handleBtnClick() {
+                    this.show=!this.show;
+                }
+            },
+        })
+    </script>
+</body>
+
+</html>
